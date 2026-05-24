@@ -1,12 +1,12 @@
 {
   "domain": "georgsmarthuette",
   "name": "Georgsmarthütte",
-  "codeowners": [],
+  "codeowners": ["@ndebbrecht"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/niklasdebbrecht/georgsmarthuette",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/niklasdebbrecht/georgsmarthuette/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

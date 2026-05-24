@@ -98,7 +98,7 @@ def _duete_attrs(data: dict[str, Any]) -> dict[str, Any]:
 def _train_departure(data: dict[str, Any], station_key: str, direction: str | None = None) -> dict[str, Any] | None:
     departures = (data.get("train_departures") or {}).get(station_key) or []
     if direction:
-        departures = [item for item in departures if direction.lower() in str(item.get("destination", "")).lower()]
+        departures = [item for item in departures if str(item.get("destination", "")).lower().startswith(direction.lower())]
     return departures[0] if departures else None
 
 

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 import logging
 from typing import Any
 
+import aiohttp
 from aiohttp import ClientSession
 
 from homeassistant.config_entries import ConfigEntry
@@ -17,6 +19,20 @@ from .sources import AwigoClient, BnetzaChargingClient, DwdClient, GmhCityClient
 _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(minutes=30)
+
+_NETWORK_ERRORS = (aiohttp.ClientError, asyncio.TimeoutError, OSError)
+
+
+async def _with_retry(coro_fn, retries: int = 2, base_delay: float = 1.0):
+    """Retry a coroutine on transient network errors with exponential backoff."""
+    for attempt in range(retries + 1):
+        try:
+            return await coro_fn()
+        except _NETWORK_ERRORS:
+            if attempt == retries:
+                raise
+            await asyncio.sleep(base_delay * (2 ** attempt))
+
 
 class GeorgsmarthuetteCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -39,16 +55,16 @@ class GeorgsmarthuetteCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         try:
             if self._awigo_address is None:
-                self._awigo_address = await self.awigo.resolve_address(
+                self._awigo_address = await _with_retry(lambda: self.awigo.resolve_address(
                     self.entry.data.get("awigo_street", ""),
                     self.entry.data.get("awigo_house_number", ""),
                     self.entry.data.get("awigo_house_number_suffix", ""),
                     self.entry.data.get("awigo_city", "Georgsmarienhütte"),
-                )
+                ))
             data["awigo_address"] = self._awigo_address
-            data["awigo_dates"] = await self.awigo.get_dates(self._awigo_address.location_id, self._awigo_address.city_id)
-            data["awigo_ics_url"] = await self.awigo.get_ics_url(self._awigo_address.location_id, self._awigo_address.city_id)
-        except Exception as err:  # noqa: BLE001
+            data["awigo_dates"] = await _with_retry(lambda: self.awigo.get_dates(self._awigo_address.location_id, self._awigo_address.city_id))
+            data["awigo_ics_url"] = await _with_retry(lambda: self.awigo.get_ics_url(self._awigo_address.location_id, self._awigo_address.city_id))
+        except Exception as err:  # noqa: BLE001 - intentional: coordinator must remain functional if one source fails
             data["errors"]["awigo"] = str(err)
 
         for key, loader in {
@@ -63,15 +79,15 @@ class GeorgsmarthuetteCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "charging": self.charging.get_georgsmarienhuette_charging,
         }.items():
             try:
-                data[key] = await loader()
-            except Exception as err:  # noqa: BLE001
+                data[key] = await _with_retry(loader)
+            except Exception as err:  # noqa: BLE001 - intentional: coordinator must remain functional if one source fails
                 data["errors"][key] = str(err)
 
         train_departures: dict[str, Any] = {}
         for station_key, station in TRAIN_STATIONS.items():
             try:
-                train_departures[station_key] = await self.trains.get_departures(station["ds100"])
-            except Exception as err:  # noqa: BLE001
+                train_departures[station_key] = await _with_retry(lambda s=station: self.trains.get_departures(s["ds100"]))
+            except Exception as err:  # noqa: BLE001 - intentional: coordinator must remain functional if one source fails
                 data["errors"][f"train_{station_key}"] = str(err)
         data["train_departures"] = train_departures
 
