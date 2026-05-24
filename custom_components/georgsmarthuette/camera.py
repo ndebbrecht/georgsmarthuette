@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .sources import GMH_CAMERAS
+from .sources import CAMERA_TIMEOUT, GMH_CAMERAS
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     session = async_get_clientsession(hass)
@@ -25,7 +25,7 @@ class GeorgsmarthuetteStillImageCamera(Camera):
         self._session = session
 
     async def async_camera_image(self, width: int | None = None, height: int | None = None) -> bytes | None:
-        async with self._session.get(self._image_url, headers={"User-Agent": "Georgsmarthuette/0.1"}) as response:
+        async with self._session.get(self._image_url, headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=CAMERA_TIMEOUT) as response:
             if response.status >= 400:
                 return None
             return await response.read()

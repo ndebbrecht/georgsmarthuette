@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta
 from html import unescape
+import asyncio
 import csv
 import io
 import math
@@ -11,6 +12,11 @@ import xml.etree.ElementTree as ET
 from typing import Any
 
 import aiohttp
+
+DEFAULT_TIMEOUT = aiohttp.ClientTimeout(total=30)
+LINK_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=10)
+CSV_DOWNLOAD_TIMEOUT = aiohttp.ClientTimeout(total=120)
+CAMERA_TIMEOUT = aiohttp.ClientTimeout(total=10)
 
 AWIGO_BASE_URL = "https://www.awigo.de/index.php"
 AWIGO_REFERER = "https://www.awigo.de/haushalt/abfallinformationen/abfuhrtermine"
@@ -29,6 +35,7 @@ OPEN_METEO_AIR_QUALITY_URL = "https://air-quality-api.open-meteo.com/v1/air-qual
 DWD_POLLEN_URL = "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
 
 NLWKN_BASE_URL = "https://bis.azure-api.net/PegelonlineNeu/REST"
+# Public read-only subscription key for NLWKN BIS (PegelOnline) API — free public governmental water level data.
 NLWKN_SUBSCRIPTION_KEY = "19094e54510d4e89b140ff2d3abf715f"
 NLWKN_DUETE_WERSEN_STATION_ID = 116
 
@@ -157,7 +164,7 @@ class AwigoClient:
 
     async def _request_text(self, params: dict[str, Any]) -> str:
         headers = {"Referer": AWIGO_REFERER, "User-Agent": "Georgsmarthuette/0.1"}
-        async with self._session.post(AWIGO_BASE_URL, params=params, headers=headers) as response:
+        async with self._session.post(AWIGO_BASE_URL, params=params, headers=headers, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             return await response.text()
 
@@ -228,7 +235,7 @@ class AwigoClient:
             "calendar[mobile]": "1",
         }
         headers = {"Referer": AWIGO_REFERER, "User-Agent": "Georgsmarthuette/0.1"}
-        async with self._session.post(AWIGO_BASE_URL, params=params, headers=headers) as response:
+        async with self._session.post(AWIGO_BASE_URL, params=params, headers=headers, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             data = await response.json(content_type=None)
 
@@ -266,7 +273,7 @@ class OpenMeteoClient:
             "forecast_days": 1,
             "timezone": "Europe/Berlin",
         }
-        async with self._session.get(OPEN_METEO_FORECAST_URL, params=params) as response:
+        async with self._session.get(OPEN_METEO_FORECAST_URL, params=params, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             return await response.json()
 
@@ -277,7 +284,7 @@ class OpenMeteoClient:
             "current": "european_aqi,pm10,pm2_5,nitrogen_dioxide,ozone",
             "timezone": "Europe/Berlin",
         }
-        async with self._session.get(OPEN_METEO_AIR_QUALITY_URL, params=params) as response:
+        async with self._session.get(OPEN_METEO_AIR_QUALITY_URL, params=params, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             return await response.json()
 
@@ -286,7 +293,7 @@ class DwdClient:
         self._session = session
 
     async def get_pollen(self) -> dict[str, Any]:
-        async with self._session.get(DWD_POLLEN_URL) as response:
+        async with self._session.get(DWD_POLLEN_URL, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             data = await response.json(content_type=None)
         regions = data.get("content", []) if isinstance(data, dict) else []
@@ -303,7 +310,7 @@ class NlwknClient:
 
     async def get_duete_wersen(self) -> dict[str, Any]:
         url = f"{NLWKN_BASE_URL}/station/{NLWKN_DUETE_WERSEN_STATION_ID}/datenspuren/parameter/1/tage/7/forecast/true"
-        async with self._session.get(url, params={"subscription-key": NLWKN_SUBSCRIPTION_KEY}) as response:
+        async with self._session.get(url, params={"subscription-key": NLWKN_SUBSCRIPTION_KEY}, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             return await response.json()
 
@@ -312,7 +319,7 @@ class TrainDeparturesClient:
         self._session = session
 
     async def get_departures(self, ds100: str) -> list[dict[str, Any]]:
-        async with self._session.get(f"{FINALREWIND_BASE_URL}/{ds100}.json", headers={"User-Agent": "Georgsmarthuette/0.1"}) as response:
+        async with self._session.get(f"{FINALREWIND_BASE_URL}/{ds100}.json", headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             data = await response.json(content_type=None)
         return data.get("departures", []) if isinstance(data, dict) else []
@@ -437,13 +444,13 @@ class BnetzaChargingClient:
     async def _current_csv_url(self) -> str:
         headers = {"User-Agent": "Georgsmarthuette/0.1"}
         try:
-            async with self._session.get(BNETZA_CHARGING_REGISTER_PAGE_URL, headers=headers) as response:
+            async with self._session.get(BNETZA_CHARGING_REGISTER_PAGE_URL, headers=headers, timeout=DEFAULT_TIMEOUT) as response:
                 response.raise_for_status()
                 html = await response.text()
             match = re.search(r'https://data\.bundesnetzagentur\.de/[^"\']+Ladesaeulenregister_BNetzA_[^"\']+\.csv', html)
             if match:
                 return unescape(match.group(0))
-        except Exception:  # noqa: BLE001 - fallback to last known CSV URL
+        except (aiohttp.ClientError, asyncio.TimeoutError, OSError):
             pass
         return BNETZA_CHARGING_REGISTER_CSV_URL
 
@@ -454,7 +461,7 @@ class BnetzaChargingClient:
 
         headers = {"User-Agent": "Georgsmarthuette/0.1"}
         csv_url = await self._current_csv_url()
-        async with self._session.get(csv_url, headers=headers) as response:
+        async with self._session.get(csv_url, headers=headers, timeout=CSV_DOWNLOAD_TIMEOUT) as response:
             response.raise_for_status()
             raw = await response.read()
 
@@ -476,7 +483,7 @@ class GmhCityClient:
         self._parking_cache: dict[str, Any] | None = None
 
     async def get_rss_items(self) -> list[RssItem]:
-        async with self._session.get(GMH_NEWS_RSS_URL) as response:
+        async with self._session.get(GMH_NEWS_RSS_URL, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             text = await response.text()
         root = ET.fromstring(text)
@@ -493,7 +500,7 @@ class GmhCityClient:
         return items
 
     async def get_ris_summary(self) -> dict[str, Any]:
-        async with self._session.get(GMH_RIS_URL, headers={"User-Agent": "Georgsmarthuette/0.1"}) as response:
+        async with self._session.get(GMH_RIS_URL, headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=DEFAULT_TIMEOUT) as response:
             response.raise_for_status()
             html = await response.text()
         text = re.sub(r"<[^>]+>", " ", html)
@@ -565,6 +572,7 @@ class GmhCityClient:
             "http://navigator.georgsmarienhuette.de/search/object-poi/",
             data={"id": parking_id, "owner": owner, "p": "0", "f": "0"},
             headers={"User-Agent": "Georgsmarthuette/0.1", "X-Requested-With": "XMLHttpRequest"},
+            timeout=DEFAULT_TIMEOUT,
         ) as response:
             response.raise_for_status()
             html = await response.text()
@@ -584,7 +592,7 @@ class GmhCityClient:
         ]
         locations_by_id: dict[str, ParkingLocation] = {}
         for url in urls:
-            async with self._session.get(url, headers={"User-Agent": "Georgsmarthuette/0.1"}) as response:
+            async with self._session.get(url, headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=DEFAULT_TIMEOUT) as response:
                 response.raise_for_status()
                 html = await response.text()
             blocks = re.findall(r'<div class="style4 managerbox.*?(?=<div class="managertrenner|<div class="untere_pagination|<div class="pagination)', html, flags=re.S)
@@ -626,8 +634,8 @@ class GmhCityClient:
         result: dict[str, dict[str, Any]] = {}
         for key, url in GMH_LINK_SOURCES.items():
             try:
-                async with self._session.get(url, headers={"User-Agent": "Georgsmarthuette/0.1"}, allow_redirects=True) as response:
+                async with self._session.get(url, headers={"User-Agent": "Georgsmarthuette/0.1"}, allow_redirects=True, timeout=LINK_CHECK_TIMEOUT) as response:
                     result[key] = {"url": str(response.url), "status": response.status, "available": response.status < 400}
-            except Exception as err:  # noqa: BLE001 - entity should expose source failure, not fail all updates
+            except (aiohttp.ClientError, asyncio.TimeoutError, OSError) as err:
                 result[key] = {"url": url, "status": None, "available": False, "error": str(err)}
         return result

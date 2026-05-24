@@ -15,6 +15,11 @@
         }
       }
     },
+    "error": {
+      "address_not_found": "Adresse konnte bei AWIGO nicht gefunden werden. Bitte Straße und Hausnummer prüfen.",
+      "cannot_connect": "Verbindung zu AWIGO fehlgeschlagen. Bitte später erneut versuchen.",
+      "invalid_url": "Ungültige URL. Muss mit http:// oder https:// beginnen."
+    },
     "abort": {
       "already_configured": "Georgsmarthütte ist bereits eingerichtet."
     }
