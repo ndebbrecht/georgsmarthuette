@@ -1,0 +1,6 @@
+{
+  "name": "Georgsmarthütte",
+  "render_readme": true,
+  "domains": ["sensor", "binary_sensor", "camera", "geo_location"],
+  "homeassistant": "2024.6.0"
+}

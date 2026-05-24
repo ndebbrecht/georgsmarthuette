@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Georgsmarthütte einrichten",
+        "description": "Adresse für AWIGO-Termine und Koordinaten für Wetterdaten konfigurieren.",
+        "data": {
+          "awigo_city": "Ort",
+          "awigo_street": "Straße",
+          "awigo_house_number": "Hausnummer",
+          "awigo_house_number_suffix": "Hausnummerzusatz",
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "camera_url": "Optionale zusätzliche Kamera-URL"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Georgsmarthütte ist bereits eingerichtet."
+    }
+  }
+}

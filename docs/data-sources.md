@@ -1,0 +1,281 @@
+# Datenquellen Georgsmarthütte
+
+Stand: 2026-05-24, erste technische Recherche.
+
+## AWIGO Abfuhrkalender
+
+Quelle: https://www.awigo.de/haushalt/abfallinformationen/abfuhrtermine/
+
+Die AWIGO-Seite nutzt eine TYPO3/AJAX-Schnittstelle. Sie ist nicht als öffentliche API dokumentiert, aber klar aus dem Frontend ableitbar.
+
+Basis:
+
+```text
+https://www.awigo.de/index.php?legacy_eID=awigoCalendar
+```
+
+Methoden:
+
+- `calendar[method]=getCities`
+- `calendar[method]=getStreets&calendar[cityID]=...`
+- `calendar[method]=getNumbers&calendar[streetID]=...`
+- `calendar[method]=getDates&calendar[locationID]=...&calendar[cityID]=...`
+- `calendar[method]=getICSfile&calendar[locationID]=...&calendar[cityID]=...`
+
+Gefundene IDs:
+
+- Stadt Georgsmarienhütte: `5348001`
+- Beispiel Straße Oeseder Straße: `13655001`
+- Beispiel Hausnummer Oeseder Straße 85: `656422001`
+
+Abfallarten als Parameter:
+
+- `calendar[rest]=1` → Restmüll, type `1`
+- `calendar[paper]=1` → Papiermüll, type `2`
+- `calendar[brown]=1` → Biomüll, type `3`
+- `calendar[yellow]=1` → Gelber Sack, type `4`
+- `calendar[mobile]=1` → Schadstoffmobil, type `5`
+
+`getDates` liefert JSON, z.B.:
+
+```json
+[{"dataDay":"28.05.2026","type":1,"delayed":"1","mobileLocation":""}]
+```
+
+`getICSfile` liefert eine erzeugte ICS-URL, z.B.:
+
+```text
+https://www.awigo.de/fileadmin/kalender/AWIGO_Kalender_Rest_Papier_Gelb_Bio_Schadstoffmobil_656355001.ics
+```
+
+Bewertung: bester MVP-Baustein. Adresse kann per Config Flow eingegeben werden; Integration resolved intern city → street → house number → Termine.
+
+## Wetterdaten Georgsmarienhütte
+
+Koordinaten aus Stadtseite/Meta: `52.199996, 8.050056`; Projektdefault: `52.2020, 8.0440`.
+
+Geeignete Quelle: Open-Meteo API, ohne API-Key.
+
+Basis:
+
+```text
+https://api.open-meteo.com/v1/forecast
+```
+
+Sinnvolle Werte:
+
+- aktuelle Temperatur `temperature_2m`
+- gefühlte Temperatur `apparent_temperature`
+- Luftfeuchte `relative_humidity_2m`
+- Taupunkt `dew_point_2m`
+- Luftdruck `pressure_msl` / `surface_pressure`
+- Bewölkung `cloud_cover`
+- Wind `wind_speed_10m`, `wind_gusts_10m`, `wind_direction_10m`
+- Niederschlag `precipitation`, `rain`, `showers`
+- Niederschlagswahrscheinlichkeit `precipitation_probability`
+- UV-Index `uv_index`
+
+Ergänzend: DWD-Warnungen für amtliche Warnlage. Für den ersten Schritt reicht Open-Meteo + später DWD-Warnungen.
+
+## E-Mobilität / Ladesäulen
+
+### Stadt/Stadtwerke-Seiten
+
+Stadtseite:
+
+```text
+https://www.georgsmarienhuette.de/stadt/daten-fakten-mobilitaet/e-mobilitaet/
+```
+
+Stadtwerke-Seite:
+
+```text
+https://www.sw-gmhuette.de/de/Mobilitaet-Zukunft/E-Ladestation/
+```
+
+Diese Seiten nennen lokale Ladeorte, sind aber eher redaktionelle Informationen und liefern keine Live-API.
+
+### Bundesnetzagentur Ladesäulenregister
+
+Offizielle Downloadseite:
+
+```text
+https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/DownloadundKontakt.html
+```
+
+Aktuell verwendete CSV:
+
+```text
+https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-04-22.csv
+```
+
+Filter im Plugin:
+
+- `Postleitzahl == 49124`
+- `Ort == Georgsmarienhütte`
+
+Rechercheergebnis im Datenstand 22.04.2026:
+
+- 27 Ladeeinrichtungs-Einträge
+- 54 Ladepunkte
+- 14 zusammengefasste Ladeorte
+- maximale Ladeleistung: 400 kW
+
+Gefundene Ladeorte u.a.:
+
+- Am Rathaus 16 — Stadtwerke Georgsmarienhütte
+- Brüsseler Str. 3 — Stadtwerke Georgsmarienhütte, Schnellladen
+- Brüsseler Straße 1B — EnBW, Schnellladen
+- Malberger Str. 5 — Q1 / VINCharge / eliso, bis 400 kW
+- Klöcknerstraße 14 — EWE Go, Schnellladen
+- Oeseder Str. 123 — Stadtwerke Georgsmarienhütte
+- Am Markt 24 — Stadtwerke Georgsmarienhütte
+
+Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
+
+## Pegelstände Düte
+
+Die Stadt verweist beim Hochwasserschutz auf NLWKN Pegelonline.
+
+Quelle: https://www.pegelonline.nlwkn.niedersachsen.de/Start
+
+Frontend-API:
+
+```text
+https://bis.azure-api.net/PegelonlineNeu/REST/
+```
+
+Subscription-Key aus öffentlichem Frontend-JS:
+
+```text
+19094e54510d4e89b140ff2d3abf715f
+```
+
+Stammdaten:
+
+```text
+stammdaten/stationen/AllePegel?subscription-key=...
+```
+
+Gefundener Düte-Pegel:
+
+- `STA_ID`: `116`
+- Name: `Wersen`
+- Gewässer: `Düte`
+- Pegelnummer Ansage: `3608`
+- Koordinaten laut API sind feldmäßig offenbar vertauscht: `Latitude=7.952...`, `Longitude=52.320...`; geographisch also ca. `52.3205, 7.9523`.
+
+Details/Datenspuren:
+
+```text
+station/116/datenspuren/parameter/1/tage/7/forecast/true?subscription-key=...
+chart/station/116/datenspuren/parameter/1/tage/7/forecast/true?subscription-key=...
+```
+
+Aktueller Test ergab für Wasserstand beim Chart-Endpunkt keine Pegelstände (`HatPegelstaende=false`, `AktuellerMesswert=-888`), aber Meldestufen sind vorhanden:
+
+- Meldestufe 1: 235 cm / NN + 53,54 m
+- Meldestufe 2: 270 cm / NN + 53,89 m
+- Meldestufe 3: 310 cm / NN + 54,29 m
+
+Bewertung: als Sensor anlegen, aber robust mit `unavailable`, wenn NLWKN keinen aktuellen Messwert liefert.
+
+## Kameras
+
+### Rathaus / Oeseder Straße
+
+Stadtseite: https://www.georgsmarienhuette.de/stadt/erster-ueberblick/webcam-georgsmarienhuette/
+
+Bild-URL:
+
+```text
+https://www.georgsmarienhuette.de/seiten/webcam/gmhuette.jpg
+```
+
+Beschreibung: Webcam 1, Oeseder Straße, Standort Rathaus, Blickrichtung Süd. Aktualisierung laut Stadt jede Minute.
+
+### Rathausplatz / Oeseder Kirmes
+
+Stadtseite: https://www.georgsmarienhuette.de/stadt/freizeit/kirmes/oeseder-kirmes/webcam/
+
+Bild-URL:
+
+```text
+https://www.georgsmarienhuette.de/seiten/webcam/webcamRP/gmhuette2.jpg
+```
+
+### Hochwasserschutz-Kameras
+
+Stadtseite: https://www.georgsmarienhuette.de/stadt/natur/webcams-hochwasserschutz/
+
+Bild-URLs:
+
+```text
+https://www.webcam-georgsmarienhuette.de/hochwasserschutz/current/webcam_breenbach.jpg
+https://www.webcam-georgsmarienhuette.de/hochwasserschutz/current/webcam_suttmeyer.jpg
+https://www.webcam-georgsmarienhuette.de/hochwasserschutz/current/webcam_malbergen.jpg
+https://www.webcam-georgsmarienhuette.de/hochwasserschutz/current/webcam_eisenbahn.jpg
+```
+
+Standorte laut Stadt:
+
+- Eisenbahnstraße in Oesede
+- Straßenbrücke Am Breenbach in Oesede
+- Hochwasserrückhaltebecken Suttmeyers Wiesen in Kloster Oesede
+- Hochwasserrückhaltebecken Hinterm Schlohe in Malbergen
+
+Bewertung: für Home Assistant besser als `camera` mit still-image polling statt Stream; es sind JPEG-Snapshots, kein echter Videostream.
+
+## Stadt-Datenpunkte
+
+### RSS: aktuelle Meldungen
+
+```text
+https://www.georgsmarienhuette.de/portal/rss.xml
+```
+
+Liefert NOLIS RSS mit aktuellen Stadtmeldungen inkl. Titel, Link, Beschreibung, Bild-Enclosure, PubDate.
+
+Mögliche Sensoren:
+
+- neueste Meldung
+- Anzahl Meldungen seit letztem Abruf
+- Meldungen mit Keywords wie `Vollsperrung`, `Kirmes`, `Ferienpass`, `Klimaschutz`, `Starkregen`
+
+### Ratsinformationssystem
+
+Quelle:
+
+```text
+https://gmh.ris.itebo.de/bi/infobi.asp
+```
+
+Beim Abruf sichtbar: kommende Sitzungen, z.B. Rat, Verwaltungsausschuss, Betriebsausschuss, Zeiten und Orte.
+
+Mögliche Sensoren:
+
+- nächste öffentliche Sitzung
+- nächster Ratstermin
+- Sitzungsort
+- Tagesordnung/Link, falls aus RIS technisch sauber extrahierbar
+
+### Stadt-Navigation / potenzielle Sensoren
+
+Aus der Stadtseite auffindbar:
+
+- Veranstaltungen: `/stadt/veranstaltungen/`
+- Bekanntmachungen: `/rathaus/aktuelles/bekanntmachungen/`
+- Stellenangebote: `/rathaus/aktuelles/stellenangebote/`
+- Ausschreibungen & Auftragsvergaben
+- Parkplätze: `/stadt/erster-ueberblick/parkplaetze/`
+- Stadtplan: `http://navigator.georgsmarienhuette.de`
+- Hochwasserschutz und Überschwemmungsgebiet Düte
+- E-Mobilität
+- Schwimmbäder
+- Sporthallenbelegungsplan
+- Solardachkataster
+- Kommunale Wärmeplanung
+- Wochenmarkt
+- Wirtschaftsdaten
+
+Bewertung: RSS, RIS und bekannte Snapshot-Kameras zuerst. Der Rest ist eher Scraping/Link-Sensor, solange keine offene API gefunden ist.
