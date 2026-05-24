@@ -8,6 +8,7 @@ A weekly maintenance check looks for new or changed public sources, especially:
 
 - Stadt Georgsmarienhütte pages, RSS and RIS
 - Stadtwerke Georgsmarienhütte mobility/energy/water information
+- local newspaper leads from Neue Osnabrücker Zeitung (NOZ) and Blickpunkt, used only as discovery signals and not as republished article content
 - VOS public transport disruptions, GTFS or GTFS-RT possibilities
 - Landkreis Osnabrück roadworks and traffic notices
 - DWD/NINA warning endpoints
