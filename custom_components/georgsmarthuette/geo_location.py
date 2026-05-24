@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-try:
-    from homeassistant.components.geo_location import GeolocationEvent
-except ImportError:  # Home Assistant renamed the base entity in newer releases.
-    from homeassistant.components.geo_location import GeolocationEvent as GeolocationEvent
+from homeassistant.components.geo_location import GeolocationEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback

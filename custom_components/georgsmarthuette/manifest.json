@@ -4,9 +4,9 @@
   "codeowners": ["@ndebbrecht"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/niklasdebbrecht/georgsmarthuette",
+  "documentation": "https://github.com/ndebbrecht/georgsmarthuette",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/niklasdebbrecht/georgsmarthuette/issues",
+  "issue_tracker": "https://github.com/ndebbrecht/georgsmarthuette/issues",
   "requirements": [],
   "version": "0.2.0"
 }
