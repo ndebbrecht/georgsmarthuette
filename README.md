@@ -170,6 +170,7 @@ Recommended next runtime check:
 - `docs/smart-city-research.md` — Smart-City comparison and future data-source ideas
 - `docs/home-assistant-model.md` — why data is modeled as sensors, binary sensors, cameras or geo-location entities
 - `docs/next-steps.md` — recommended next implementation steps
+- `docs/maintenance.md` — maintenance cadence, source criteria and boundaries
 
 ## License
 
