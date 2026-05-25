@@ -123,6 +123,19 @@ GMH_CAMERAS = {
 }
 
 POLLEN_REGION_HINTS = ("Niedersachsen", "Bremen")
+GMH_TRANSPORT_RELEVANCE_TERMS = (
+    "georgsmarienhütte",
+    "georgsmarienhuette",
+    "gmhütte",
+    "gmhuette",
+    "oesede",
+    "kloster oesede",
+    "harderberg",
+    "holzhausen",
+    "malbergen",
+    "b51",
+    "weghaus",
+)
 
 @dataclass(slots=True)
 class AwigoCollectionDate:
@@ -323,6 +336,77 @@ class TrainDeparturesClient:
             response.raise_for_status()
             data = await response.json(content_type=None)
         return data.get("departures", []) if isinstance(data, dict) else []
+
+
+class VosDisruptionsClient:
+    """Parse public VOS disruption/roadworks notices relevant to GMH.
+
+    VOS exposes these notices as a public accordion page. There is no stable JSON
+    endpoint visible, so the parser is deliberately conservative: it only extracts
+    title, text, PDF/link targets and line classes from the visible HTML blocks.
+    """
+
+    def __init__(self, session: aiohttp.ClientSession) -> None:
+        self._session = session
+
+    @staticmethod
+    def _clean(value: str | None) -> str:
+        if not value:
+            return ""
+        value = re.sub(r"<br\s*/?>", " ", value, flags=re.I)
+        value = re.sub(r"<[^>]+>", " ", value)
+        value = unescape(value).replace("&#62;", ">")
+        return re.sub(r"\s+", " ", value).strip()
+
+    @staticmethod
+    def _line_ids(class_attr: str) -> list[str]:
+        return sorted({match.upper().replace("_", "") for match in re.findall(r"\bbus_([a-z0-9]+)\b", class_attr, flags=re.I)})
+
+    @staticmethod
+    def _is_relevant(title: str, description: str, lines: list[str]) -> bool:
+        haystack = f"{title} {description}".lower()
+        if any(term in haystack for term in GMH_TRANSPORT_RELEVANCE_TERMS):
+            return True
+        # Lines with regular GMH relevance according to the city/VOS research notes.
+        return bool({"411", "413", "451", "452", "454", "463", "464", "465", "466", "467", "468", "469", "M3", "S40"} & set(lines))
+
+    @classmethod
+    def parse_disruptions(cls, html: str) -> dict[str, Any]:
+        notices: list[dict[str, Any]] = []
+        blocks = re.findall(r'<li class="([^"]*accordion-item[^"]*)"[^>]*>(.*?)</li>', html, flags=re.I | re.S)
+        for class_attr, block in blocks:
+            title_match = re.search(r'<a[^>]*class="[^"]*accordion-title[^"]*"[^>]*>(.*?)</a>', block, flags=re.I | re.S)
+            if not title_match:
+                continue
+            description_match = re.search(r'<div[^>]*class="[^"]*accordion-content[^"]*"[^>]*>(.*?)</div>', block, flags=re.I | re.S)
+            links = [unescape(link) for link in re.findall(r'href="(https?://[^"]+)"', block)]
+            title = cls._clean(title_match.group(1))
+            description = cls._clean(description_match.group(1) if description_match else "")
+            lines = cls._line_ids(class_attr)
+            notice = {
+                "title": title,
+                "description": description,
+                "lines": lines,
+                "links": links,
+                "source": VOS_DISRUPTIONS_URL,
+            }
+            notice["relevant"] = cls._is_relevant(title, description, lines)
+            notices.append(notice)
+
+        relevant = [notice for notice in notices if notice["relevant"]]
+        return {
+            "source": VOS_DISRUPTIONS_URL,
+            "total_count": len(notices),
+            "relevant_count": len(relevant),
+            "items": notices,
+            "relevant_items": relevant,
+        }
+
+    async def get_disruptions(self) -> dict[str, Any]:
+        async with self._session.get(VOS_DISRUPTIONS_URL, headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=DEFAULT_TIMEOUT) as response:
+            response.raise_for_status()
+            html = await response.text()
+        return self.parse_disruptions(html)
 
 
 class BnetzaChargingClient:

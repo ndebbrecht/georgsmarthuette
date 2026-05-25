@@ -72,7 +72,14 @@ VOS-Störungen/Baustellen sind öffentlich als Webseite verfügbar:
 
 - https://www.vos.info/fahrplan/stoerungen-baustellen/
 
-Diese Seite enthält bereits GMH-relevante Baustellen/Umleitungen, z.B. Harderberg/Nordstraße, B51 Richtung Oesede, Linie 454/411 etc. Das ist eine gute Scraping-Quelle für ÖPNV-Störungen.
+Diese Seite enthält GMH-relevante Baustellen/Umleitungen, z.B. Harderberg/Nordstraße, B51 Richtung Oesede und Oeseder Straße.
+
+Plugin-Umsetzung 25.05.2026:
+
+- konservatives HTML-Parsing der sichtbaren Akkordeon-Einträge
+- Filter nach GMH-Ortsbegriffen und regelmäßig relevanten Linien
+- Sensoren für relevante Anzahl und neuesten relevanten Hinweis
+- Binary-Sensor für aktuelle relevante VOS-Verkehrsstörung
 
 Offene Frage: stabile GTFS/GTFS-RT-Quelle für VOS/VBN prüfen. Sichtbar sind PDF-Links über `fahrplaner.vbn.de`; eine maschinenlesbare API ist nicht direkt auf der Stadtseite verlinkt.
 
@@ -185,7 +192,7 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 ## Sinnvolle nächste Plugin-Ausbaustufen
 
 1. Bahnhöfe Oesede/Kloster Oesede: umgesetzt über Finalrewind JSON.
-2. VOS-Störungen für GMH-relevante Linien/Haltestellen scrapen.
+2. VOS-Störungen für GMH-relevante Linien/Haltestellen scrapen: umgesetzt.
 3. Landkreis-Baustellen nach GMH-Ortsbegriffen filtern.
 4. E-Ladepunkte über Bundesnetzagentur-Stammdaten aufnehmen: umgesetzt; Live-Verfügbarkeit separat prüfen.
 5. Parkplatz-POIs statisch aufnehmen.

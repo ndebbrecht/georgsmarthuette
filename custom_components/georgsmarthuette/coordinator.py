@@ -14,7 +14,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, GMH_LATITUDE, GMH_LONGITUDE
-from .sources import AwigoClient, BnetzaChargingClient, DwdClient, GmhCityClient, NlwknClient, OpenMeteoClient, TRAIN_STATIONS, TrainDeparturesClient
+from .sources import AwigoClient, BnetzaChargingClient, DwdClient, GmhCityClient, NlwknClient, OpenMeteoClient, TRAIN_STATIONS, TrainDeparturesClient, VosDisruptionsClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ class GeorgsmarthuetteCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.nlwkn = NlwknClient(self.session)
         self.city = GmhCityClient(self.session)
         self.trains = TrainDeparturesClient(self.session)
+        self.vos = VosDisruptionsClient(self.session)
         self.charging = BnetzaChargingClient(self.session)
         self._awigo_address = None
 
@@ -76,6 +77,7 @@ class GeorgsmarthuetteCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "ris": self.city.get_ris_summary,
             "city_links": self.city.check_link_sources,
             "parking": self.city.get_parking_locations,
+            "vos_disruptions": self.vos.get_disruptions,
             "charging": self.charging.get_georgsmarienhuette_charging,
         }.items():
             try:

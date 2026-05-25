@@ -1,6 +1,6 @@
 # Datenquellen Georgsmarthütte
 
-Stand: 2026-05-24, erste technische Recherche.
+Stand: 2026-05-25, laufende technische Recherche.
 
 ## AWIGO Abfuhrkalender
 
@@ -76,6 +76,24 @@ Sinnvolle Werte:
 - UV-Index `uv_index`
 
 Ergänzend: DWD-Warnungen für amtliche Warnlage. Für den ersten Schritt reicht Open-Meteo + später DWD-Warnungen.
+
+
+## VOS Störungen und Baustellen
+
+Quelle: https://www.vos.info/fahrplan/stoerungen-baustellen/
+
+Die VOS-Seite veröffentlicht aktuelle ÖPNV-Störungen, Baustellen und Umleitungen als öffentliche HTML-Akkordeonliste. Eine stabile JSON- oder GTFS-RT-Schnittstelle war weiterhin nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Listeneinträge:
+
+- Titel
+- Beschreibungstext
+- betroffene Linien aus CSS-Klassen wie `bus_454`
+- PDF-/Info-Links
+
+GMH-Relevanz wird über Ortsbegriffe und regelmäßig relevante Linien gefiltert, u.a. `Georgsmarienhütte`, `GMHütte`, `Oesede`, `Kloster Oesede`, `Harderberg`, `Holzhausen`, `Malbergen`, `B51`, `Weghaus` sowie Linien `411`, `413`, `451`, `452`, `454`, `463` bis `469`, `M3` und `S40`.
+
+Live-Smoke-Test am 25.05.2026 ergab mehrere relevante Einträge, u.a. Oesede/Harderberg/Nordstraße, B51 Richtung Oesede und Oeseder Straße.
+
+Bewertung: nützliche öffentliche Quelle für Home-Assistant-Warnungen. Einschränkung: HTML-Scraping statt offizieller API; deshalb nur robuste Kurzattribute und Quelllink, keine tiefe Zeit-/Routenmodellierung.
 
 ## E-Mobilität / Ladesäulen
 

@@ -47,3 +47,8 @@ python3 -m py_compile custom_components/georgsmarthuette/*.py
 ## Boundaries
 
 Do not contact the city, Stadtwerke, operators or third parties without explicit approval. Repository maintenance and public-source research are okay; outbound messages are separate.
+
+
+## Maintenance note 2026-05-25
+
+Checked city RSS/pages, VOS disruptions, Landkreis Osnabrück roadworks, Stadtwerke charging information, BNetzA charging API leads and Smart-City/LoRaWAN mentions. No official GMH Smart-City/open-data platform was found. VOS disruption notices were stable enough to add as conservative public HTML parsing; Landkreis roadworks remain a future source because the page is broad county text and needs careful filtering to avoid noisy entities.

@@ -58,6 +58,13 @@ Finalrewind departure-board JSON for the RB75 / Haller Willem stations:
 - Oesede: next departure, next toward Osnabrück, next toward Bielefeld
 - Kloster Oesede: next departure, next toward Osnabrück, next toward Bielefeld
 
+VOS disruption/roadworks notices:
+
+- public VOS disruption page parsed conservatively from visible HTML
+- filtered for GMH-relevant place names and regular local lines
+- count sensor, latest relevant notice sensor and problem binary sensor
+- attributes include affected lines, description, links and source URL
+
 ### Parking and charging, Home-Assistant style
 
 The integration exposes parking and charging in two layers:

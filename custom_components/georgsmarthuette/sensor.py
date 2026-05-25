@@ -163,6 +163,23 @@ def _charging_attrs(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _vos_attrs(data: dict[str, Any]) -> dict[str, Any]:
+    vos = data.get("vos_disruptions") or {}
+    relevant = vos.get("relevant_items") or []
+    return {
+        "source": vos.get("source"),
+        "total_count": vos.get("total_count"),
+        "relevant_count": vos.get("relevant_count"),
+        "items": relevant[:10],
+        "note": "Öffentliche VOS-Störungs-/Baustellenseite, gefiltert nach GMH-Ortsbegriffen und relevanten Linien.",
+    }
+
+
+def _vos_latest(data: dict[str, Any]) -> Any:
+    relevant = (data.get("vos_disruptions") or {}).get("relevant_items") or []
+    return relevant[0].get("title") if relevant else None
+
+
 def _latest_rss(data: dict[str, Any]) -> Any:
     items = data.get("rss_items") or []
     return items[0].title if items else None
@@ -215,6 +232,8 @@ SENSOR_DESCRIPTIONS: list[GeorgsmarthuetteSensorDescription] = [
     GeorgsmarthuetteSensorDescription(key="parking_locations_total", name="GMH Parkplätze gesamt", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _parking(d, "location_count"), attrs_fn=_parking_attrs),
     GeorgsmarthuetteSensorDescription(key="parking_regular_total", name="GMH Stadtparkplätze", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _parking(d, "regular_count"), attrs_fn=_parking_attrs),
     GeorgsmarthuetteSensorDescription(key="parking_hiking_total", name="GMH Wanderparkplätze", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _parking(d, "hiking_count"), attrs_fn=_parking_attrs),
+    GeorgsmarthuetteSensorDescription(key="vos_disruptions_relevant", name="GMH VOS relevante Störungen", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: (d.get("vos_disruptions") or {}).get("relevant_count"), attrs_fn=_vos_attrs),
+    GeorgsmarthuetteSensorDescription(key="vos_latest_disruption", name="GMH VOS neueste relevante Störung", value_fn=_vos_latest, attrs_fn=_vos_attrs),
     GeorgsmarthuetteSensorDescription(key="charging_points_total", name="GMH Ladepunkte gesamt", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "charging_points"), attrs_fn=_charging_attrs),
     GeorgsmarthuetteSensorDescription(key="charging_stations_total", name="GMH Ladeeinrichtungen gesamt", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "station_count"), attrs_fn=_charging_attrs),
     GeorgsmarthuetteSensorDescription(key="charging_locations_total", name="GMH Ladestandorte gesamt", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "location_count"), attrs_fn=_charging_attrs),

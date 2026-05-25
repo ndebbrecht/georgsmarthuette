@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0] - 2026-05-25
+
+### Added
+- VOS disruption/roadworks monitoring for GMH-relevant public transport notices.
+- Sensors for relevant VOS disruption count and latest relevant disruption.
+- Problem binary sensor for current relevant VOS traffic disruption.
+- Documentation for the VOS source, filtering criteria and maintenance findings.
+
+### Changed
+- Version bumped to 0.3.0.
+
 ## [0.2.0] - 2026-05-24
 
 ### Fixed
