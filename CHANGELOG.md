@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0] - 2026-06-01
+
+### Added
+- Official NINA/warnung.bund.de warning support via the Landkreis Osnabrück ARS endpoint covering Georgsmarienhütte.
+- Sensors for NINA warning count and latest warning.
+- Safety binary sensor for current official NINA warnings.
+- Documentation for NINA source scope and maintenance findings.
+
+### Changed
+- Version bumped to 0.4.0.
+
 ## [0.3.0] - 2026-05-25
 
 ### Added

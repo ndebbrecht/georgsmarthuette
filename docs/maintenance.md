@@ -52,3 +52,7 @@ Do not contact the city, Stadtwerke, operators or third parties without explicit
 ## Maintenance note 2026-05-25
 
 Checked city RSS/pages, VOS disruptions, Landkreis Osnabrück roadworks, Stadtwerke charging information, BNetzA charging API leads and Smart-City/LoRaWAN mentions. No official GMH Smart-City/open-data platform was found. VOS disruption notices were stable enough to add as conservative public HTML parsing; Landkreis roadworks remain a future source because the page is broad county text and needs careful filtering to avoid noisy entities.
+
+## Maintenance note 2026-06-01
+
+Checked city roadworks page, BNetzA charging-register download page, NINA/warnung.bund.de API, NOZ/Blickpunkt search leads, Stadt/Stadtwerke charging context and Smart-City/LoRaWAN/open-data leads. No new municipal Smart-City/open-data platform or stable parking/live-charging API was found. The official NINA dashboard API was stable enough to add as Landkreis Osnabrück warning coverage for GMH, with explicit county-level scope to avoid overstating precision.

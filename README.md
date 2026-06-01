@@ -93,6 +93,7 @@ Charging data:
 - latest city RSS item
 - next RIS council/committee session where parseable
 - availability/link sensors for relevant public data sources
+- NINA/warnung.bund.de warning count, latest official warning and warning binary sensor
 - source-error binary sensor
 
 ## Installation via HACS custom repository
@@ -153,6 +154,7 @@ The `geo_location` platform is used for static POIs such as parking and charging
 - Parking: static POI data only; no free/busy count.
 - Charging: official master data only; no live availability or defect status.
 - Düte: NLWKN may return no current water-level value for Wersen; warning levels are still exposed.
+- NINA warnings are exposed via the official county-level Landkreis Osnabrück ARS endpoint, so a warning may cover the wider county rather than only Georgsmarienhütte.
 - Some city sources are exposed as availability/link sensors because no stable public API was found.
 - The Bundesnetzagentur CSV URL changes over time; the integration tries to discover the current CSV from the official download page and falls back to the last known URL.
 

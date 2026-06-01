@@ -62,6 +62,10 @@ BNETZA_CHARGING_REGISTER_CSV_URL = "https://data.bundesnetzagentur.de/Bundesnetz
 BNETZA_CHARGING_REGISTER_PAGE_URL = "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/DownloadundKontakt.html"
 DWD_WARNINGS_URL = "https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnkarten/warnWetter_nib_node.html?bundesland=nib"
 NINA_WARNINGS_URL = "https://warnung.bund.de/"
+NINA_DASHBOARD_URL = "https://warnung.bund.de/api31/dashboard/{ars}.json"
+# NINA/warnung.bund.de dashboard data is exposed by county ARS. The Landkreis
+# Osnabrück ARS is the narrowest stable public endpoint that covers GMH.
+NINA_LANDKREIS_OSNABRUECK_ARS = "034590000000"
 SMARD_URL = "https://www.smard.de/"
 MARKTSTAMMDATENREGISTER_URL = "https://www.marktstammdatenregister.de/MaStR"
 SENSOR_COMMUNITY_URL = "https://sensor.community/"
@@ -407,6 +411,61 @@ class VosDisruptionsClient:
             response.raise_for_status()
             html = await response.text()
         return self.parse_disruptions(html)
+
+
+class NinaWarningsClient:
+    """Load official NINA/warnung.bund.de warnings for Landkreis Osnabrück.
+
+    The public NINA dashboard API currently serves warnings by county-level ARS.
+    That is broader than Georgsmarienhütte, so exposed attributes explicitly keep
+    the coverage label instead of pretending that every warning is GMH-specific.
+    """
+
+    def __init__(self, session: aiohttp.ClientSession) -> None:
+        self._session = session
+
+    @staticmethod
+    def _normalise_warning(item: dict[str, Any]) -> dict[str, Any]:
+        payload = item.get("payload") or {}
+        data = payload.get("data") or {}
+        info = data.get("info") or []
+        first_info = info[0] if info and isinstance(info[0], dict) else {}
+        return {
+            "id": item.get("id") or payload.get("id"),
+            "provider": data.get("provider") or payload.get("source"),
+            "headline": data.get("headline") or first_info.get("headline"),
+            "severity": data.get("severity") or first_info.get("severity"),
+            "urgency": data.get("urgency") or first_info.get("urgency"),
+            "msg_type": data.get("msgType") or data.get("msg_type"),
+            "sent": data.get("sent"),
+            "effective": data.get("effective") or first_info.get("effective"),
+            "onset": data.get("onset") or first_info.get("onset"),
+            "expires": data.get("expires") or first_info.get("expires"),
+            "description": data.get("description") or first_info.get("description"),
+            "instruction": data.get("instruction") or first_info.get("instruction"),
+            "web": data.get("web") or first_info.get("web"),
+        }
+
+    @classmethod
+    def parse_warnings(cls, items: list[dict[str, Any]]) -> dict[str, Any]:
+        warnings = [cls._normalise_warning(item) for item in items]
+        warnings = [item for item in warnings if item.get("id") or item.get("headline")]
+        warnings.sort(key=lambda item: item.get("sent") or item.get("effective") or "", reverse=True)
+        return {
+            "source": NINA_DASHBOARD_URL.format(ars=NINA_LANDKREIS_OSNABRUECK_ARS),
+            "coverage": "Landkreis Osnabrück (enthält Georgsmarienhütte)",
+            "ars": NINA_LANDKREIS_OSNABRUECK_ARS,
+            "warning_count": len(warnings),
+            "warnings": warnings,
+        }
+
+    async def get_warnings(self) -> dict[str, Any]:
+        url = NINA_DASHBOARD_URL.format(ars=NINA_LANDKREIS_OSNABRUECK_ARS)
+        headers = {"User-Agent": "Georgsmarthuette/0.1", "Accept": "application/json"}
+        async with self._session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT) as response:
+            response.raise_for_status()
+            data = await response.json(content_type=None)
+        return self.parse_warnings(data if isinstance(data, list) else [])
 
 
 class BnetzaChargingClient:

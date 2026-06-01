@@ -55,11 +55,27 @@ def _vos_attrs(data: dict[str, Any]) -> dict[str, Any]:
     return {"source": vos.get("source"), "relevant_count": vos.get("relevant_count"), "items": (vos.get("relevant_items") or [])[:10]}
 
 
+def _nina_warning(data: dict[str, Any]) -> bool:
+    return bool((data.get("nina_warnings") or {}).get("warning_count"))
+
+
+def _nina_attrs(data: dict[str, Any]) -> dict[str, Any]:
+    nina = data.get("nina_warnings") or {}
+    return {
+        "source": nina.get("source"),
+        "coverage": nina.get("coverage"),
+        "ars": nina.get("ars"),
+        "warning_count": nina.get("warning_count"),
+        "warnings": (nina.get("warnings") or [])[:10],
+    }
+
+
 BINARY_DESCRIPTIONS = [
     GeorgsmarthuetteBinarySensorDescription(key="weather_warning", name="GMH Wetterwarnung Proxy", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_weather_warning, attrs_fn=lambda d: (d.get("weather") or {}).get("current", {})),
     GeorgsmarthuetteBinarySensorDescription(key="duete_warning", name="Düte Hochwasserwarnung Wersen", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_duete_warning),
     GeorgsmarthuetteBinarySensorDescription(key="air_quality_warning", name="GMH Luftqualitätswarnung", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_air_warning, attrs_fn=lambda d: (d.get("air_quality") or {}).get("current", {})),
     GeorgsmarthuetteBinarySensorDescription(key="vos_disruption", name="GMH VOS relevante Verkehrsstörung", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=_vos_disruption, attrs_fn=_vos_attrs),
+    GeorgsmarthuetteBinarySensorDescription(key="nina_warning", name="GMH NINA amtliche Warnung", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_nina_warning, attrs_fn=_nina_attrs),
     GeorgsmarthuetteBinarySensorDescription(key="source_errors", name="GMH Datenquellen Fehler", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=lambda d: bool(d.get("errors")), attrs_fn=lambda d: {"errors": d.get("errors") or {}}),
 ]
 

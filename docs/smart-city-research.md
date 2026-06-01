@@ -195,7 +195,8 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 2. VOS-Störungen für GMH-relevante Linien/Haltestellen scrapen: umgesetzt.
 3. Landkreis-Baustellen nach GMH-Ortsbegriffen filtern.
 4. E-Ladepunkte über Bundesnetzagentur-Stammdaten aufnehmen: umgesetzt; Live-Verfügbarkeit separat prüfen.
-5. Parkplatz-POIs statisch aufnehmen.
-6. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
-7. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung.
-8. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.
+5. NINA/warnung.bund.de-Warnmeldungen: umgesetzt über Landkreis-Osnabrück-ARS; gemeindescharfe/DWD-Direktwarnungen weiter prüfen.
+6. Parkplatz-POIs statisch aufnehmen.
+7. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
+8. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung.
+9. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.

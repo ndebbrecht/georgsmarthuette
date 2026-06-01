@@ -1,6 +1,6 @@
 # Datenquellen Georgsmarthütte
 
-Stand: 2026-05-25, laufende technische Recherche.
+Stand: 2026-06-01, laufende technische Recherche.
 
 ## AWIGO Abfuhrkalender
 
@@ -150,6 +150,30 @@ Gefundene Ladeorte u.a.:
 - Am Markt 24 — Stadtwerke Georgsmarienhütte
 
 Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
+
+## Amtliche Warnmeldungen / NINA
+
+Quelle: https://warnung.bund.de/
+
+Öffentliche Dashboard-API:
+
+```text
+https://warnung.bund.de/api31/dashboard/034590000000.json
+```
+
+Verwendeter Gebietsschlüssel:
+
+- `034590000000` — Landkreis Osnabrück, amtlicher Regionalschlüssel auf Landkreisebene
+- Georgsmarienhütte hat AGS `03459019`; ein stabiler gemeindescharfer Dashboard-Endpunkt war nicht verfügbar.
+
+Bewertung: stabile offizielle Warnquelle für Bevölkerungsschutz-, Wetter- und Lagewarnungen, aber räumlich breiter als nur GMH. Die Integration kennzeichnet deshalb die Abdeckung ausdrücklich als „Landkreis Osnabrück (enthält Georgsmarienhütte)“ und nutzt die Meldungen als amtlichen Sicherheits-/Warnindikator, nicht als rein stadtteilgenaue Sensorik.
+
+Umsetzung:
+
+- Warnungsanzahl
+- neueste Warnmeldung
+- Binary-Sensor für aktuell vorhandene amtliche Warnungen
+- Attribute: Quelle, ARS, Abdeckung, bis zu zehn Meldungen mit Anbieter, Schwere, Dringlichkeit, Zeiten, Beschreibung/Handlungsempfehlung und Weblink
 
 ## Pegelstände Düte
 

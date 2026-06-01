@@ -38,8 +38,8 @@ Only add live availability if the endpoint is stable and acceptable to poll from
 
 ## 5. Warnings
 
-- Replace weather-warning proxy with official DWD warning data.
-- Add NINA/MoWaS warnings for GMH if a stable public endpoint is available.
+- NINA/warnung.bund.de warnings are implemented via the official Landkreis Osnabrück ARS endpoint. Monitor whether a stable municipality-level endpoint becomes available.
+- Replace the simple Open-Meteo weather-warning proxy with official direct DWD warning data if a stable endpoint/cell mapping is confirmed.
 
 ## 6. City data classification
 
