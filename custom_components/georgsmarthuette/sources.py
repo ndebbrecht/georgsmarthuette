@@ -141,6 +141,24 @@ GMH_TRANSPORT_RELEVANCE_TERMS = (
     "weghaus",
 )
 
+GMH_ROADWORKS_RELEVANCE_TERMS = (
+    "georgsmarienhütte",
+    "georgsmarienhuette",
+    "gmhütte",
+    "gmhuette",
+    "oesede",
+    "kloster oesede",
+    "harderberg",
+    "holzhausen",
+    "malbergen",
+    "b51",
+    "b 51",
+    "b51/b68",
+    "b 51 / b 68",
+    "osnabrück-nahne",
+    "osnabrueck-nahne",
+)
+
 @dataclass(slots=True)
 class AwigoCollectionDate:
     day: date
@@ -411,6 +429,79 @@ class VosDisruptionsClient:
             response.raise_for_status()
             html = await response.text()
         return self.parse_disruptions(html)
+
+
+class CountyRoadworksClient:
+    """Parse Landkreis Osnabrück roadworks notices relevant to GMH.
+
+    The county publishes traffic/roadworks notices as public accordion cards. This
+    parser intentionally keeps only conservative headline/date/summary attributes
+    and filters by GMH-specific place/road terms to avoid turning the broad county
+    page into noisy Home Assistant entities.
+    """
+
+    def __init__(self, session: aiohttp.ClientSession) -> None:
+        self._session = session
+
+    @staticmethod
+    def _clean(value: str | None) -> str:
+        if not value:
+            return ""
+        value = re.sub(r"<br\s*/?>", " ", value, flags=re.I)
+        value = re.sub(r"<[^>]+>", " ", value)
+        return re.sub(r"\s+", " ", unescape(value)).strip()
+
+    @staticmethod
+    def _is_relevant(title: str, description: str) -> bool:
+        haystack = f"{title} {description}".lower()
+        return any(term in haystack for term in GMH_ROADWORKS_RELEVANCE_TERMS)
+
+    @classmethod
+    def parse_roadworks(cls, html: str) -> dict[str, Any]:
+        notices: list[dict[str, Any]] = []
+        blocks = re.findall(
+            r'<div class="card card-accordion"[^>]*id="([^"]+)"[^>]*>(.*?)(?=<div class="card card-accordion"|#### Geschwindigkeitsmessplan|</main>|$)',
+            html,
+            flags=re.I | re.S,
+        )
+        for node_id, block in blocks:
+            title_match = re.search(r'<h6 class="headline-title">\s*(.*?)\s*</h6>', block, flags=re.I | re.S)
+            if not title_match:
+                continue
+            dates = re.findall(r'<time[^>]*datetime="([^"]+)"[^>]*>(.*?)</time>', block, flags=re.I | re.S)
+            body_match = re.search(r'<div class="card-body">(.*?)</div>\s*</div>\s*</div>', block, flags=re.I | re.S)
+            title = cls._clean(title_match.group(1))
+            description = cls._clean(body_match.group(1) if body_match else "")
+            if len(description) > 1200:
+                description = description[:1197].rstrip() + "..."
+            notice = {
+                "id": node_id,
+                "title": title,
+                "description": description,
+                "start": dates[0][0] if dates else None,
+                "end": dates[1][0] if len(dates) > 1 else None,
+                "start_label": cls._clean(dates[0][1]) if dates else None,
+                "end_label": cls._clean(dates[1][1]) if len(dates) > 1 else None,
+                "source": COUNTY_ROADWORKS_URL,
+            }
+            notice["relevant"] = cls._is_relevant(title, description)
+            notices.append(notice)
+
+        relevant = [notice for notice in notices if notice["relevant"]]
+        return {
+            "source": COUNTY_ROADWORKS_URL,
+            "total_count": len(notices),
+            "relevant_count": len(relevant),
+            "items": notices,
+            "relevant_items": relevant,
+            "filter_terms": GMH_ROADWORKS_RELEVANCE_TERMS,
+        }
+
+    async def get_roadworks(self) -> dict[str, Any]:
+        async with self._session.get(COUNTY_ROADWORKS_URL, headers={"User-Agent": "Georgsmarthuette/0.1"}, timeout=DEFAULT_TIMEOUT) as response:
+            response.raise_for_status()
+            html = await response.text()
+        return self.parse_roadworks(html)
 
 
 class NinaWarningsClient:

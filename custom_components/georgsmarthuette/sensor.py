@@ -180,6 +180,24 @@ def _vos_latest(data: dict[str, Any]) -> Any:
     return relevant[0].get("title") if relevant else None
 
 
+def _roadworks_attrs(data: dict[str, Any]) -> dict[str, Any]:
+    roadworks = data.get("county_roadworks") or {}
+    relevant = roadworks.get("relevant_items") or []
+    return {
+        "source": roadworks.get("source"),
+        "total_count": roadworks.get("total_count"),
+        "relevant_count": roadworks.get("relevant_count"),
+        "filter_terms": roadworks.get("filter_terms"),
+        "items": relevant[:10],
+        "note": "Öffentliche Landkreis-Osnabrück-Verkehrs-/Baustellenseite, gefiltert nach GMH-Orts- und Straßenbegriffen.",
+    }
+
+
+def _roadworks_latest(data: dict[str, Any]) -> Any:
+    relevant = (data.get("county_roadworks") or {}).get("relevant_items") or []
+    return relevant[0].get("title") if relevant else None
+
+
 def _nina_attrs(data: dict[str, Any]) -> dict[str, Any]:
     nina = data.get("nina_warnings") or {}
     return {
@@ -251,6 +269,8 @@ SENSOR_DESCRIPTIONS: list[GeorgsmarthuetteSensorDescription] = [
     GeorgsmarthuetteSensorDescription(key="parking_hiking_total", name="GMH Wanderparkplätze", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _parking(d, "hiking_count"), attrs_fn=_parking_attrs),
     GeorgsmarthuetteSensorDescription(key="vos_disruptions_relevant", name="GMH VOS relevante Störungen", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: (d.get("vos_disruptions") or {}).get("relevant_count"), attrs_fn=_vos_attrs),
     GeorgsmarthuetteSensorDescription(key="vos_latest_disruption", name="GMH VOS neueste relevante Störung", value_fn=_vos_latest, attrs_fn=_vos_attrs),
+    GeorgsmarthuetteSensorDescription(key="county_roadworks_relevant", name="GMH Landkreis relevante Baustellen", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: (d.get("county_roadworks") or {}).get("relevant_count"), attrs_fn=_roadworks_attrs),
+    GeorgsmarthuetteSensorDescription(key="county_latest_roadwork", name="GMH Landkreis neueste relevante Baustelle", value_fn=_roadworks_latest, attrs_fn=_roadworks_attrs),
     GeorgsmarthuetteSensorDescription(key="nina_warning_count", name="GMH NINA Warnmeldungen", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: (d.get("nina_warnings") or {}).get("warning_count"), attrs_fn=_nina_attrs),
     GeorgsmarthuetteSensorDescription(key="nina_latest_warning", name="GMH NINA neueste Warnmeldung", value_fn=_nina_latest, attrs_fn=_nina_attrs),
     GeorgsmarthuetteSensorDescription(key="charging_points_total", name="GMH Ladepunkte gesamt", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "charging_points"), attrs_fn=_charging_attrs),

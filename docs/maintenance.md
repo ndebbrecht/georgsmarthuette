@@ -56,3 +56,7 @@ Checked city RSS/pages, VOS disruptions, Landkreis Osnabrück roadworks, Stadtwe
 ## Maintenance note 2026-06-01
 
 Checked city roadworks page, BNetzA charging-register download page, NINA/warnung.bund.de API, NOZ/Blickpunkt search leads, Stadt/Stadtwerke charging context and Smart-City/LoRaWAN/open-data leads. No new municipal Smart-City/open-data platform or stable parking/live-charging API was found. The official NINA dashboard API was stable enough to add as Landkreis Osnabrück warning coverage for GMH, with explicit county-level scope to avoid overstating precision.
+## Maintenance note 2026-06-08
+
+Checked city roadworks page, Landkreis Osnabrück traffic/roadworks page, VOS/GTFS leads, Stadt/Stadtwerke charging pages, BNetzA charging context, NOZ/Blickpunkt leads and Smart-City/LoRaWAN/open-data mentions. No new municipal Smart-City/open-data platform or stable live EV/parking API was found. The Landkreis roadworks page is currently structured enough to parse conservatively and had two GMH-relevant entries (A30 Osnabrück-Nahne toward B51/B68 and B51/B68 OS-Nahne ↔ GMHütte), so it was added as filtered roadworks sensors/binary sensor.
+

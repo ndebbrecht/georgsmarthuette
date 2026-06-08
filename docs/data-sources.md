@@ -95,6 +95,26 @@ Live-Smoke-Test am 25.05.2026 ergab mehrere relevante Einträge, u.a. Oesede/Har
 
 Bewertung: nützliche öffentliche Quelle für Home-Assistant-Warnungen. Einschränkung: HTML-Scraping statt offizieller API; deshalb nur robuste Kurzattribute und Quelllink, keine tiefe Zeit-/Routenmodellierung.
 
+## Landkreis Osnabrück Verkehrs- und Baustellenmeldungen
+
+Quelle: https://www.landkreis-osnabrueck.de/fachthemen/ordnung-und-verkehr/baustellen-und-blitzplan
+
+Die Landkreis-Seite veröffentlicht aktuelle Verkehrs- und Baustellenmeldungen als öffentliche HTML-Akkordeonliste mit Titel, Zeitraum und Beschreibung. Eine JSON- oder Feed-Schnittstelle war nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Karten und filtert nach GMH-relevanten Orts- und Straßenbegriffen, u.a. `Georgsmarienhütte`, `GMHütte`, `Oesede`, `Harderberg`, `B51` und `Osnabrück-Nahne`.
+
+Live-Smoke-Test am 08.06.2026 ergab 12 Landkreis-Meldungen, davon 2 GMH-relevant:
+
+- A30-Ausfahrt Osnabrück-Nahne Richtung B51/B68 Bad Iburg/Georgsmarienhütte gesperrt, 18.05.2026 bis 24.07.2026
+- B51/B68 Fahrbahn- und Radwegerneuerung zwischen OS-Nahne und GMHütte, 16.02.2026 bis 03.07.2026
+
+Bewertung: nützliche öffentliche Quelle für regionale Verkehrswarnungen, wenn streng gefiltert. Einschränkung: HTML-Scraping statt offizieller API; deshalb nur Kurzattribute und Quelllink, keine tiefe Verkehrsmodellierung.
+
+Umsetzung:
+
+- Sensor für Anzahl relevanter Landkreis-Baustellen
+- Sensor für neueste relevante Landkreis-Baustelle
+- Binary-Sensor für aktuell vorhandene relevante Landkreis-Baustelle/Verkehrseinschränkung
+- Attribute: Quelle, Gesamtzahl, gefilterte Treffer, Titel, Zeitraum, Beschreibung
+
 ## E-Mobilität / Ladesäulen
 
 ### Stadt/Stadtwerke-Seiten

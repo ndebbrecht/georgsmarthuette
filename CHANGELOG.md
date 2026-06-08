@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0] - 2026-06-08
+
+### Added
+- Landkreis Osnabrück roadworks monitoring for GMH-relevant road and traffic notices.
+- Sensors for relevant county roadworks count and latest relevant roadwork.
+- Problem binary sensor for current relevant county roadwork/traffic restrictions.
+- Parser tests and documentation for the Landkreis roadworks source, filtering criteria and maintenance findings.
+
+### Changed
+- Version bumped to 0.5.0.
+
+
 ## [0.4.0] - 2026-06-01
 
 ### Added

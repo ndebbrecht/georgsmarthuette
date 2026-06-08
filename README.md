@@ -65,6 +65,13 @@ VOS disruption/roadworks notices:
 - count sensor, latest relevant notice sensor and problem binary sensor
 - attributes include affected lines, description, links and source URL
 
+Landkreis Osnabrück roadworks notices:
+
+- public Landkreis traffic/roadworks accordion page parsed conservatively from visible HTML
+- filtered for GMH-relevant place and road terms such as Georgsmarienhütte, Oesede, Harderberg, B51 and Osnabrück-Nahne
+- count sensor, latest relevant roadwork sensor and problem binary sensor
+- attributes include title, period, summary and source URL
+
 ### Parking and charging, Home-Assistant style
 
 The integration exposes parking and charging in two layers:

@@ -97,11 +97,14 @@ Bewertung:
 - Landkreis-Seite enthält viele Meldungen als Text; nach `Georgsmarienhütte`, `Oesede`, `Harderberg`, `B51`, `Kloster Oesede` filterbar.
 - VOS-Seite ist für konkrete ÖPNV-Auswirkungen sehr wertvoll.
 
-Plugin-Idee:
+Plugin-Umsetzung 08.06.2026:
 
-- Sensor `GMH Verkehrs-/Baustellenmeldung aktuell`
-- Binary-Sensor `GMH relevante Verkehrsstörung`
-- Attribute: Quelle, Zeitraum, betroffene Straße/Linie/Haltestelle, Link/PDF.
+- Landkreis-Baustellen werden konservativ aus der öffentlichen Akkordeonseite gelesen und nach GMH-Orts-/Straßenbegriffen gefiltert.
+- Sensoren: relevante Anzahl und neueste relevante Landkreis-Baustelle.
+- Binary-Sensor: relevante Landkreis-Baustelle/Verkehrseinschränkung vorhanden.
+- Attribute: Quelle, Zeitraum, Beschreibung und gefilterte Einträge.
+
+Live-Smoke-Test fand aktuell 2 relevante Einträge: A30-Anschlussstelle Osnabrück-Nahne Richtung B51/B68 und B51/B68 zwischen OS-Nahne und GMHütte.
 
 ## E-Mobilität / Ladepunkte
 
@@ -193,7 +196,7 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 
 1. Bahnhöfe Oesede/Kloster Oesede: umgesetzt über Finalrewind JSON.
 2. VOS-Störungen für GMH-relevante Linien/Haltestellen scrapen: umgesetzt.
-3. Landkreis-Baustellen nach GMH-Ortsbegriffen filtern.
+3. Landkreis-Baustellen nach GMH-Ortsbegriffen filtern: umgesetzt.
 4. E-Ladepunkte über Bundesnetzagentur-Stammdaten aufnehmen: umgesetzt; Live-Verfügbarkeit separat prüfen.
 5. NINA/warnung.bund.de-Warnmeldungen: umgesetzt über Landkreis-Osnabrück-ARS; gemeindescharfe/DWD-Direktwarnungen weiter prüfen.
 6. Parkplatz-POIs statisch aufnehmen.

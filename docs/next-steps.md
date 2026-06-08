@@ -33,7 +33,7 @@ Only add live availability if the endpoint is stable and acceptable to poll from
 ## 4. Traffic and public transport
 
 - VOS disruptions/roadworks are implemented; monitor parser robustness and replace with GTFS-RT/API if VOS/VBN expose one.
-- Scrape/filter Landkreis Osnabrück roadworks for GMH terms.
+- Landkreis Osnabrück roadworks are implemented with conservative GMH filtering; monitor parser robustness and noise level.
 - Look for GTFS or GTFS-RT data for VOS/VBN.
 
 ## 5. Warnings
