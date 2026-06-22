@@ -81,7 +81,13 @@ Plugin-Umsetzung 25.05.2026:
 - Sensoren für relevante Anzahl und neuesten relevanten Hinweis
 - Binary-Sensor für aktuelle relevante VOS-Verkehrsstörung
 
-Offene Frage: stabile GTFS/GTFS-RT-Quelle für VOS/VBN prüfen. Sichtbar sind PDF-Links über `fahrplaner.vbn.de`; eine maschinenlesbare API ist nicht direkt auf der Stadtseite verlinkt.
+Recherche-Update 22.06.2026:
+
+- Der VBN dokumentiert offene GTFS-Static-Daten über Connect Fahrplanauskunft und GTFS-Realtime-Prognosedaten unter `http://gtfsr.vbn.de/gtfsr_connect.json` und `.bin`.
+- GTFS.DE nennt VBN als enthaltene Agentur im freien GTFS-RT-Stream.
+- Der direkte VBN-JSON-Smoke-Test lieferte HTTP 200, war aber ca. 20 MB groß und enthält ohne lokale GTFS-Static-Zuordnung nur IDs (`routeId`, `tripId`, `stopId`).
+
+Bewertung: stabile öffentliche Forschungsrichtung für echte Bus-Echtzeitdaten, aber noch nicht einbauen. Nächster sinnvoller Schritt wäre eine lokale, gecachte Static-GTFS-Auswertung für GMH-relevante Haltestellen/Linien; erst danach lassen sich GTFS-RT-Delays sauber und ohne riesige Attribute modellieren.
 
 ## Straßenbaumaßnahmen / Verkehr
 
@@ -189,6 +195,7 @@ Ergebnis:
 - E-Ladestationen und Mobilitätskonzept auffindbar.
 - Keine öffentliche Smart-City-, LoRaWAN-, Parkplatzsensorik- oder Umwelt-Sensor-API gefunden.
 - Kein Open-SmartCity-Hub-Äquivalent wie in Solingen sichtbar.
+- Stadtwerke Osnabrück / SWO Netz dokumentieren LoRaWAN in der Smart Region Osnabrück öffentlich. Das ist ein regionaler Hinweis, aber derzeit keine GMH-spezifische öffentliche Sensordatenquelle.
 
 Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtwerke direkt fragen. Öffentlich versteckt auffindbar war sie bei dieser Recherche nicht.
 
@@ -200,6 +207,7 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 4. E-Ladepunkte über Bundesnetzagentur-Stammdaten aufnehmen: umgesetzt; Live-Verfügbarkeit separat prüfen.
 5. NINA/warnung.bund.de-Warnmeldungen: umgesetzt über Landkreis-Osnabrück-ARS; gemeindescharfe/DWD-Direktwarnungen weiter prüfen.
 6. Parkplatz-POIs statisch aufnehmen.
-7. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
-8. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung.
-9. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.
+7. VBN/Connect GTFS-Static lokal für GMH-Haltestellen/Linien auswerten und danach GTFS-RT-Delays prüfen.
+8. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
+9. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung.
+10. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.

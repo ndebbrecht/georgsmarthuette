@@ -60,3 +60,6 @@ Checked city roadworks page, BNetzA charging-register download page, NINA/warnun
 
 Checked city roadworks page, Landkreis Osnabrück traffic/roadworks page, VOS/GTFS leads, Stadt/Stadtwerke charging pages, BNetzA charging context, NOZ/Blickpunkt leads and Smart-City/LoRaWAN/open-data mentions. No new municipal Smart-City/open-data platform or stable live EV/parking API was found. The Landkreis roadworks page is currently structured enough to parse conservatively and had two GMH-relevant entries (A30 Osnabrück-Nahne toward B51/B68 and B51/B68 OS-Nahne ↔ GMHütte), so it was added as filtered roadworks sensors/binary sensor.
 
+## Maintenance note 2026-06-22
+
+Checked repository state, existing source docs, city/Stadtwerke/NOZ/Blickpunkt-style web leads, Smart-City/LoRaWAN mentions, VOS/VBN GTFS leads, GTFS.DE, charging, roadworks and warning-source context. No new GMH-specific Smart-City/open-data platform, live parking API or stable live charging API was found. VBN/Connect GTFS-Realtime is now documented as an official public lead: the JSON endpoint is live, but large and ID-based, so it should not be added until a cached GTFS-Static mapping for GMH-relevant stops/routes exists.

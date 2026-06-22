@@ -82,7 +82,7 @@ Ergänzend: DWD-Warnungen für amtliche Warnlage. Für den ersten Schritt reicht
 
 Quelle: https://www.vos.info/fahrplan/stoerungen-baustellen/
 
-Die VOS-Seite veröffentlicht aktuelle ÖPNV-Störungen, Baustellen und Umleitungen als öffentliche HTML-Akkordeonliste. Eine stabile JSON- oder GTFS-RT-Schnittstelle war weiterhin nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Listeneinträge:
+Die VOS-Seite veröffentlicht aktuelle ÖPNV-Störungen, Baustellen und Umleitungen als öffentliche HTML-Akkordeonliste. Eine eigene JSON-Schnittstelle für genau diese sichtbaren Störungsmeldungen war weiterhin nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Listeneinträge:
 
 - Titel
 - Beschreibungstext
@@ -94,6 +94,31 @@ GMH-Relevanz wird über Ortsbegriffe und regelmäßig relevante Linien gefiltert
 Live-Smoke-Test am 25.05.2026 ergab mehrere relevante Einträge, u.a. Oesede/Harderberg/Nordstraße, B51 Richtung Oesede und Oeseder Straße.
 
 Bewertung: nützliche öffentliche Quelle für Home-Assistant-Warnungen. Einschränkung: HTML-Scraping statt offizieller API; deshalb nur robuste Kurzattribute und Quelllink, keine tiefe Zeit-/Routenmodellierung.
+
+### VBN / Connect GTFS-Realtime
+
+Quelle: https://www.vbn.de/service/entwicklerinfos/opendata-und-openservice
+
+Der VBN dokumentiert öffentliche GTFS-Realtime-Prognosedaten im JSON- und ProtoBuf-Format:
+
+```text
+http://gtfsr.vbn.de/gtfsr_connect.json
+http://gtfsr.vbn.de/gtfsr_connect.bin
+```
+
+Der VBN beschreibt die Daten als Prognosedaten mit planmäßiger An-/Abfahrt und Verspätung; sie werden alle 60 Sekunden aktualisiert und stehen unter CC BY-SA 4.0. GTFS.DE führt VBN ebenfalls als enthaltene Agentur in seinem freien GTFS-RT-Stream:
+
+```text
+https://realtime.gtfs.de/realtime-free.pb
+```
+
+Live-Smoke-Test am 22.06.2026:
+
+- `http://gtfsr.vbn.de/gtfsr_connect.json` antwortete mit HTTP 200 und `content-type: application/json`.
+- Der JSON-Feed war ca. 20 MB groß.
+- Die Einträge enthalten `tripUpdate`, `routeId`, `tripId`, `stopId` und Verspätungen, aber ohne lokale GTFS-Static-Zuordnung keine direkt sprechenden GMH-Haltestellen- oder Liniennamen.
+
+Bewertung: technisch interessant und offiziell dokumentiert, aber noch nicht als Home-Assistant-Quelle eingebaut. Für robuste GMH-Sensoren müsste zuerst eine stabile, lokal gecachte GTFS-Static-Zuordnung für relevante VOS-/GMH-Haltestellen und Linien erstellt werden. Den kompletten 20-MB-Feed alle 30 Minuten nur für ungemappte IDs zu laden, wäre aktuell nicht verhältnismäßig.
 
 ## Landkreis Osnabrück Verkehrs- und Baustellenmeldungen
 

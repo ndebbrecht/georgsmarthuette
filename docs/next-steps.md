@@ -34,7 +34,7 @@ Only add live availability if the endpoint is stable and acceptable to poll from
 
 - VOS disruptions/roadworks are implemented; monitor parser robustness and replace with GTFS-RT/API if VOS/VBN expose one.
 - Landkreis Osnabrück roadworks are implemented with conservative GMH filtering; monitor parser robustness and noise level.
-- Look for GTFS or GTFS-RT data for VOS/VBN.
+- VBN/Connect GTFS-Realtime is publicly documented and live at `http://gtfsr.vbn.de/gtfsr_connect.json`, but the feed is large and ID-based. Before adding entities, build a small cached GTFS-Static mapping for GMH-relevant stops/routes, then filter GTFS-RT updates against that mapping.
 
 ## 5. Warnings
 
