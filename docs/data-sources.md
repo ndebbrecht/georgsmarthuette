@@ -323,11 +323,17 @@ https://www.georgsmarienhuette.de/portal/rss.xml
 
 Liefert NOLIS RSS mit aktuellen Stadtmeldungen inkl. Titel, Link, Beschreibung, Bild-Enclosure, PubDate.
 
-Mögliche Sensoren:
+Umsetzung:
 
 - neueste Meldung
-- Anzahl Meldungen seit letztem Abruf
-- Meldungen mit Keywords wie `Vollsperrung`, `Kirmes`, `Ferienpass`, `Klimaschutz`, `Starkregen`
+- Keyword-Zähler für Meldungsthemen:
+  - Verkehr/Baustellen
+  - Wetter/Hochwasser
+  - Veranstaltungen
+  - Verwaltung
+- Attribute mit Keywords, gefilterten Meldungen, neuestem Treffer und Quelllink
+
+Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik.
 
 ### Ratsinformationssystem
 

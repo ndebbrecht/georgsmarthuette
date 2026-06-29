@@ -13,7 +13,14 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import GeorgsmarthuetteCoordinator
-from .sources import AWIGO_WASTE_TYPES, AwigoCollectionDate, GMH_LINK_SOURCES, TRAIN_STATIONS
+from .sources import AWIGO_WASTE_TYPES, AwigoCollectionDate, GMH_LINK_SOURCES, RSS_TOPIC_KEYWORDS, TRAIN_STATIONS, classify_rss_items
+
+RSS_TOPIC_NAMES = {
+    "traffic": "Verkehr/Baustellen",
+    "weather_flood": "Wetter/Hochwasser",
+    "events": "Veranstaltungen",
+    "administration": "Verwaltung",
+}
 
 @dataclass(frozen=True, kw_only=True)
 class GeorgsmarthuetteSensorDescription(SensorEntityDescription):
@@ -227,6 +234,28 @@ def _latest_rss_attrs(data: dict[str, Any]) -> dict[str, Any]:
     item = items[0]
     return {"link": item.link, "description": item.description, "published": item.published, "image": item.image, "item_count": len(items)}
 
+
+def _rss_topic_count(data: dict[str, Any], topic: str) -> int:
+    return classify_rss_items(data.get("rss_items") or [], topic)["count"]
+
+
+def _rss_topic_attrs(data: dict[str, Any], topic: str) -> dict[str, Any]:
+    summary = classify_rss_items(data.get("rss_items") or [], topic)
+    items = summary["items"]
+    attrs: dict[str, Any] = {
+        "source": "https://www.georgsmarienhuette.de/portal/rss.xml",
+        "keywords": summary["keywords"],
+        "item_count": len(data.get("rss_items") or []),
+        "matching_items": items[:10],
+        "note": "Einfache Keyword-Klassifizierung der öffentlichen Stadt-RSS-Meldungen.",
+    }
+    if items:
+        attrs["latest_title"] = items[0]["title"]
+        attrs["latest_link"] = items[0]["link"]
+        attrs["latest_published"] = items[0]["published"]
+    return attrs
+
+
 SENSOR_DESCRIPTIONS: list[GeorgsmarthuetteSensorDescription] = [
     GeorgsmarthuetteSensorDescription(key="awigo_next_collection", name="GMH AWIGO nächste Abfuhr", device_class=SensorDeviceClass.DATE, value_fn=lambda d: (_next_collection(d).day if _next_collection(d) else None), attrs_fn=lambda d: _collection_attrs(_next_collection(d)) | _awigo_address_attrs(d)),
     *[
@@ -280,6 +309,10 @@ SENSOR_DESCRIPTIONS: list[GeorgsmarthuetteSensorDescription] = [
     GeorgsmarthuetteSensorDescription(key="charging_normal_points", name="GMH Normalladepunkte", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "normal_charging_points"), attrs_fn=_charging_attrs),
     GeorgsmarthuetteSensorDescription(key="charging_max_power", name="GMH maximale Ladeleistung", native_unit_of_measurement="kW", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d: _charging(d, "max_power_kw"), attrs_fn=_charging_attrs),
     GeorgsmarthuetteSensorDescription(key="latest_city_news", name="GMH neueste Stadtmeldung", value_fn=_latest_rss, attrs_fn=_latest_rss_attrs),
+    *[
+        GeorgsmarthuetteSensorDescription(key=f"city_news_{topic}", name=f"GMH Stadtmeldungen {RSS_TOPIC_NAMES[topic]}", state_class=SensorStateClass.MEASUREMENT, value_fn=lambda d, topic=topic: _rss_topic_count(d, topic), attrs_fn=lambda d, topic=topic: _rss_topic_attrs(d, topic))
+        for topic in RSS_TOPIC_KEYWORDS
+    ],
     GeorgsmarthuetteSensorDescription(key="next_council_session", name="GMH nächste Rats-/Ausschusssitzung", value_fn=lambda d: (d.get("ris") or {}).get("summary"), attrs_fn=lambda d: d.get("ris") or {}),
     *[GeorgsmarthuetteSensorDescription(key=f"city_source_{key}", name=f"GMH Datenquelle {key.replace('_', ' ')}", value_fn=lambda d, key=key: "online" if ((d.get("city_links") or {}).get(key) or {}).get("available") else "offline", attrs_fn=lambda d, key=key: ((d.get("city_links") or {}).get(key) or {"url": GMH_LINK_SOURCES[key]})) for key in GMH_LINK_SOURCES],
 ]

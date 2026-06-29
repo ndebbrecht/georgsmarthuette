@@ -193,6 +193,78 @@ class RssItem:
     published: str | None
     image: str | None
 
+RSS_TOPIC_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "traffic": (
+        "baustelle",
+        "baumaßnahme",
+        "baumassnahme",
+        "sperrung",
+        "vollsperrung",
+        "verkehr",
+        "umleitung",
+        "straße",
+        "strasse",
+        "radweg",
+    ),
+    "weather_flood": (
+        "hochwasser",
+        "starkregen",
+        "unwetter",
+        "warnung",
+        "wetter",
+        "pegel",
+        "duete",
+        "düte",
+    ),
+    "events": (
+        "veranstaltung",
+        "fest",
+        "kirmes",
+        "ferienpass",
+        "markt",
+        "konzert",
+        "waldbühne",
+        "waldbuehne",
+    ),
+    "administration": (
+        "rat",
+        "ausschuss",
+        "sitzung",
+        "bekanntmachung",
+        "verwaltung",
+        "rathaus",
+        "bürger",
+        "buerger",
+        "wahl",
+    ),
+}
+
+
+def classify_rss_items(items: list[RssItem], topic: str) -> dict[str, Any]:
+    keywords = RSS_TOPIC_KEYWORDS[topic]
+    matching: list[RssItem] = []
+    for item in items:
+        haystack = f"{item.title} {item.description}".casefold()
+        if any(keyword.casefold() in haystack for keyword in keywords):
+            matching.append(item)
+
+    return {
+        "topic": topic,
+        "keywords": keywords,
+        "count": len(matching),
+        "items": [
+            {
+                "title": item.title,
+                "link": item.link,
+                "published": item.published,
+                "description": item.description,
+                "image": item.image,
+            }
+            for item in matching
+        ],
+    }
+
+
 class AwigoClient:
     def __init__(self, session: aiohttp.ClientSession) -> None:
         self._session = session

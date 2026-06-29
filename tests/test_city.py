@@ -4,7 +4,7 @@ import re
 import pytest
 from aioresponses import aioresponses
 
-from custom_components.georgsmarthuette.sources import GMH_NEWS_RSS_URL, GmhCityClient
+from custom_components.georgsmarthuette.sources import GMH_NEWS_RSS_URL, GmhCityClient, RssItem, classify_rss_items
 
 _RSS_URL = re.compile(r"https://www\.georgsmarienhuette\.de/portal/rss\.xml.*")
 _LINK_URL = re.compile(r"https?://.*")
@@ -75,6 +75,34 @@ class TestGetRssItems:
             m.get(_RSS_URL, status=500)
             with pytest.raises(aiohttp.ClientResponseError):
                 await GmhCityClient(session).get_rss_items()
+
+
+class TestClassifyRssItems:
+    def test_counts_matching_topic_items(self):
+        items = [
+            RssItem("Vollsperrung in Oesede", "https://example.com/1", "Umleitung eingerichtet", None, None),
+            RssItem("Sommerkonzert im Rathaus", "https://example.com/2", "Veranstaltung am Markt", None, None),
+        ]
+
+        summary = classify_rss_items(items, "traffic")
+
+        assert summary["count"] == 1
+        assert summary["items"][0]["title"] == "Vollsperrung in Oesede"
+
+    def test_matches_description(self):
+        items = [
+            RssItem("Neue Meldung", "https://example.com/1", "Starkregen und Hochwasser möglich", None, None),
+        ]
+
+        summary = classify_rss_items(items, "weather_flood")
+
+        assert summary["count"] == 1
+
+    def test_returns_keywords_for_home_assistant_attributes(self):
+        summary = classify_rss_items([], "administration")
+
+        assert "rat" in summary["keywords"]
+        assert summary["items"] == []
 
 
 class TestCheckLinkSources:

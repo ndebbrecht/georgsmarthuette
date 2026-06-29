@@ -98,6 +98,7 @@ Charging data:
 ### City information and source health
 
 - latest city RSS item
+- topic counts for city RSS notices: traffic/construction, weather/flooding, events and administration
 - next RIS council/committee session where parseable
 - availability/link sensors for relevant public data sources
 - NINA/warnung.bund.de warning count, latest official warning and warning binary sensor

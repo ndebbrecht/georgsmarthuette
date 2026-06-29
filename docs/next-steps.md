@@ -43,8 +43,9 @@ Only add live availability if the endpoint is stable and acceptable to poll from
 
 ## 6. City data classification
 
-- Classify RSS items by topic: traffic, construction, weather/flooding, events, administration.
-- Expose counts or binary sensors for high-impact categories.
+- RSS item topic counts are implemented for traffic/construction, weather/flooding, events and administration.
+- Monitor whether the city RSS gains explicit categories; if so, prefer those over keyword classification.
+- Consider binary sensors for high-impact categories only if the keyword results prove useful and not noisy.
 
 ## 7. Release hygiene
 

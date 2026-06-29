@@ -63,3 +63,7 @@ Checked city roadworks page, Landkreis Osnabrück traffic/roadworks page, VOS/GT
 ## Maintenance note 2026-06-22
 
 Checked repository state, existing source docs, city/Stadtwerke/NOZ/Blickpunkt-style web leads, Smart-City/LoRaWAN mentions, VOS/VBN GTFS leads, GTFS.DE, charging, roadworks and warning-source context. No new GMH-specific Smart-City/open-data platform, live parking API or stable live charging API was found. VBN/Connect GTFS-Realtime is now documented as an official public lead: the JSON endpoint is live, but large and ID-based, so it should not be added until a cached GTFS-Static mapping for GMH-relevant stops/routes exists.
+
+## Maintenance note 2026-06-29
+
+Checked repository state, existing source docs, city roadworks/RSS pages, VOS disruption notices, Landkreis Osnabrück roadworks, Stadtwerke/city charging pages, NINA warnings, NOZ as a discovery lead and Smart-City/LoRaWAN/open-data context. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. Added topic-count sensors for the existing official city RSS feed so Home Assistant can track likely traffic/construction, weather/flooding, event and administration notices without scraping additional pages.
