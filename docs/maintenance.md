@@ -67,3 +67,7 @@ Checked repository state, existing source docs, city/Stadtwerke/NOZ/Blickpunkt-s
 ## Maintenance note 2026-06-29
 
 Checked repository state, existing source docs, city roadworks/RSS pages, VOS disruption notices, Landkreis Osnabrück roadworks, Stadtwerke/city charging pages, NINA warnings, NOZ as a discovery lead and Smart-City/LoRaWAN/open-data context. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. Added topic-count sensors for the existing official city RSS feed so Home Assistant can track likely traffic/construction, weather/flooding, event and administration notices without scraping additional pages.
+
+## Maintenance note 2026-07-06
+
+Checked repository state, source docs, city roadworks/RSS pages, VOS disruption notices, Landkreis Osnabrück roadworks, Stadtwerke/city charging pages, NINA warnings, NOZ/Blickpunkt-style web leads and Smart-City/LoRaWAN/open-data context. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries useful traffic/construction leads such as Unterbauerschaft and fibre/tiefbau notices, so the existing RSS classification was exposed as a dedicated problem binary sensor without adding brittle scraping.

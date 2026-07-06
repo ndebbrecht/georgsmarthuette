@@ -332,8 +332,9 @@ Umsetzung:
   - Veranstaltungen
   - Verwaltung
 - Attribute mit Keywords, gefilterten Meldungen, neuestem Treffer und Quelllink
+- Problem-Binary-Sensor für aktuelle Verkehrs-/Baumeldungen aus derselben offiziellen RSS-Quelle
 
-Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik.
+Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik. Der Binary-Sensor ersetzt keine VOS-/Landkreis-Verkehrsdaten, sondern macht städtische Hinweise wie Vollsperrungen, Tiefbauarbeiten oder Umleitungen direkt automationstauglich.
 
 ### Ratsinformationssystem
 

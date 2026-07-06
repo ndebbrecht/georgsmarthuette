@@ -23,6 +23,10 @@ Binary sensors represent alert/problem state:
 - weather warning proxy
 - Düte flood warning
 - air-quality warning
+- GMH-relevant VOS disruption notices
+- GMH-relevant Landkreis roadworks
+- city RSS traffic/construction notices
+- NINA/warnung.bund.de warnings
 - source errors
 
 ## Cameras

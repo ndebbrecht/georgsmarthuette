@@ -209,5 +209,5 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 6. Parkplatz-POIs statisch aufnehmen.
 7. VBN/Connect GTFS-Static lokal für GMH-Haltestellen/Linien auswerten und danach GTFS-RT-Delays prüfen.
 8. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
-9. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung.
+9. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser, Veranstaltung, Verwaltung. Ergänzt am 06.07.2026: Verkehrs-/Baumeldungen aus dem offiziellen Stadt-RSS werden zusätzlich als Problem-Binary-Sensor sichtbar gemacht.
 10. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.
