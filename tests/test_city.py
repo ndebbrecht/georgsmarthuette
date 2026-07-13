@@ -98,6 +98,16 @@ class TestClassifyRssItems:
 
         assert summary["count"] == 1
 
+    def test_weather_topic_matches_drought_and_water_saving_notices(self):
+        items = [
+            RssItem("Stadt ruft zum Wassersparen auf", "https://example.com/1", "Hitze und Trockenheit halten an", None, None),
+        ]
+
+        summary = classify_rss_items(items, "weather_flood")
+
+        assert summary["count"] == 1
+        assert "wassersparen" in summary["keywords"]
+
     def test_returns_keywords_for_home_assistant_attributes(self):
         summary = classify_rss_items([], "administration")
 

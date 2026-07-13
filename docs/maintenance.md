@@ -71,3 +71,7 @@ Checked repository state, existing source docs, city roadworks/RSS pages, VOS di
 ## Maintenance note 2026-07-06
 
 Checked repository state, source docs, city roadworks/RSS pages, VOS disruption notices, Landkreis Osnabrück roadworks, Stadtwerke/city charging pages, NINA warnings, NOZ/Blickpunkt-style web leads and Smart-City/LoRaWAN/open-data context. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries useful traffic/construction leads such as Unterbauerschaft and fibre/tiefbau notices, so the existing RSS classification was exposed as a dedicated problem binary sensor without adding brittle scraping.
+
+## Maintenance note 2026-07-13
+
+Checked repository state, source docs, official city RSS and roadworks pages, Landkreis Osnabrück roadworks, Stadtwerke charging information, VOS/VBN/GTFS leads, NINA warning context and Smart-City/LoRaWAN/open-data leads. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries a water-saving/drought notice, so the existing weather/flooding RSS classification now also covers heat, drought and water-saving keywords and exposes those matches as a dedicated safety binary sensor.

@@ -80,6 +80,21 @@ def _city_traffic_news_attrs(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _city_weather_news(data: dict[str, Any]) -> bool:
+    return bool(classify_rss_items(data.get("rss_items") or [], "weather_flood")["count"])
+
+
+def _city_weather_news_attrs(data: dict[str, Any]) -> dict[str, Any]:
+    summary = classify_rss_items(data.get("rss_items") or [], "weather_flood")
+    return {
+        "source": "https://www.georgsmarienhuette.de/portal/rss.xml",
+        "relevant_count": summary["count"],
+        "keywords": summary["keywords"],
+        "items": summary["items"][:10],
+        "note": "Offizielle Stadt-RSS-Meldungen mit Wetter-, Hochwasser-, Hitze- oder Trockenheitsbezug.",
+    }
+
+
 def _nina_warning(data: dict[str, Any]) -> bool:
     return bool((data.get("nina_warnings") or {}).get("warning_count"))
 
@@ -102,6 +117,7 @@ BINARY_DESCRIPTIONS = [
     GeorgsmarthuetteBinarySensorDescription(key="vos_disruption", name="GMH VOS relevante Verkehrsstörung", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=_vos_disruption, attrs_fn=_vos_attrs),
     GeorgsmarthuetteBinarySensorDescription(key="county_roadworks", name="GMH Landkreis relevante Baustelle", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=_roadworks_problem, attrs_fn=_roadworks_attrs),
     GeorgsmarthuetteBinarySensorDescription(key="city_traffic_news", name="GMH Stadt Verkehrs-/Baumeldung", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=_city_traffic_news, attrs_fn=_city_traffic_news_attrs),
+    GeorgsmarthuetteBinarySensorDescription(key="city_weather_news", name="GMH Stadt Wetter-/Wassermeldung", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_city_weather_news, attrs_fn=_city_weather_news_attrs),
     GeorgsmarthuetteBinarySensorDescription(key="nina_warning", name="GMH NINA amtliche Warnung", device_class=BinarySensorDeviceClass.SAFETY, is_on_fn=_nina_warning, attrs_fn=_nina_attrs),
     GeorgsmarthuetteBinarySensorDescription(key="source_errors", name="GMH Datenquellen Fehler", device_class=BinarySensorDeviceClass.PROBLEM, is_on_fn=lambda d: bool(d.get("errors")), attrs_fn=lambda d: {"errors": d.get("errors") or {}}),
 ]

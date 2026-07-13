@@ -211,6 +211,13 @@ RSS_TOPIC_KEYWORDS: dict[str, tuple[str, ...]] = {
     "weather_flood": (
         "hochwasser",
         "starkregen",
+        "trockenheit",
+        "duerre",
+        "dürre",
+        "hitze",
+        "wassersparen",
+        "wasser sparen",
+        "wasserknappheit",
         "unwetter",
         "warnung",
         "wetter",
