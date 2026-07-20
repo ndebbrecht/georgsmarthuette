@@ -58,7 +58,7 @@ FINALREWIND_KLOSTER_OESEDE_URL = "https://dbf.finalrewind.org/HKOE.json"
 COUNTY_ROADWORKS_URL = "https://www.landkreis-osnabrueck.de/fachthemen/ordnung-und-verkehr/baustellen-und-blitzplan"
 GMH_ROADWORKS_URL = "https://www.georgsmarienhuette.de/portal/seiten/aktuelle-strassenbaumassnahmen-914001552-22600.html"
 STADTWERKE_CHARGING_URL = "https://www.sw-gmhuette.de/de/Mobilitaet-Zukunft/E-Ladestation/"
-BNETZA_CHARGING_REGISTER_CSV_URL = "https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-04-22.csv"
+BNETZA_CHARGING_REGISTER_CSV_URL = "https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-07-07.csv"
 BNETZA_CHARGING_REGISTER_PAGE_URL = "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/DownloadundKontakt.html"
 DWD_WARNINGS_URL = "https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnkarten/warnWetter_nib_node.html?bundesland=nib"
 NINA_WARNINGS_URL = "https://warnung.bund.de/"
@@ -218,6 +218,9 @@ RSS_TOPIC_KEYWORDS: dict[str, tuple[str, ...]] = {
         "wassersparen",
         "wasser sparen",
         "wasserknappheit",
+        "waldbrand",
+        "waldbrandgefahr",
+        "brandgefahr",
         "unwetter",
         "warnung",
         "wetter",
@@ -681,6 +684,13 @@ class BnetzaChargingClient:
         return points
 
     @staticmethod
+    def _decode_csv(raw: bytes) -> str:
+        try:
+            return raw.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            return raw.decode("latin1", errors="ignore")
+
+    @staticmethod
     def _summarise(rows: list[dict[str, str]]) -> dict[str, Any]:
         stations: list[dict[str, Any]] = []
         locations: dict[str, dict[str, Any]] = {}
@@ -780,7 +790,7 @@ class BnetzaChargingClient:
             response.raise_for_status()
             raw = await response.read()
 
-        text = raw.decode("latin1", errors="ignore")
+        text = self._decode_csv(raw)
         lines = text.splitlines()
         header_index = next((index for index, line in enumerate(lines) if line.startswith("Ladeeinrichtungs-ID;")), 10)
         reader = csv.DictReader(io.StringIO("\n".join(lines[header_index:])), delimiter=";")

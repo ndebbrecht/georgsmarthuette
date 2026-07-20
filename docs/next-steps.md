@@ -45,7 +45,7 @@ Only add live availability if the endpoint is stable and acceptable to poll from
 
 - RSS item topic counts are implemented for traffic/construction, weather/flooding, events and administration.
 - A problem binary sensor now exposes current traffic/construction matches from the same official city RSS feed.
-- A safety binary sensor now exposes current city RSS matches for weather, flooding, heat, drought and water-saving advisories.
+- A safety binary sensor now exposes current city RSS matches for weather, flooding, heat, drought, water-saving and wildfire-risk advisories.
 - Monitor whether the city RSS gains explicit categories; if so, prefer those over keyword classification.
 - Consider binary sensors for high-impact categories only if the keyword results prove useful and not noisy.
 

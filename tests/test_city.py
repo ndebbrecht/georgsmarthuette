@@ -108,6 +108,16 @@ class TestClassifyRssItems:
         assert summary["count"] == 1
         assert "wassersparen" in summary["keywords"]
 
+    def test_weather_topic_matches_wildfire_risk_notices(self):
+        items = [
+            RssItem("Waldbrandgefahr im Landkreis", "https://example.com/1", "Verordnung zur Verhuetung von Waldbraenden", None, None),
+        ]
+
+        summary = classify_rss_items(items, "weather_flood")
+
+        assert summary["count"] == 1
+        assert "waldbrandgefahr" in summary["keywords"]
+
     def test_returns_keywords_for_home_assistant_attributes(self):
         summary = classify_rss_items([], "administration")
 

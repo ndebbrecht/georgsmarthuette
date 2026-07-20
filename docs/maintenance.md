@@ -75,3 +75,7 @@ Checked repository state, source docs, city roadworks/RSS pages, VOS disruption 
 ## Maintenance note 2026-07-13
 
 Checked repository state, source docs, official city RSS and roadworks pages, Landkreis Osnabrück roadworks, Stadtwerke charging information, VOS/VBN/GTFS leads, NINA warning context and Smart-City/LoRaWAN/open-data leads. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries a water-saving/drought notice, so the existing weather/flooding RSS classification now also covers heat, drought and water-saving keywords and exposes those matches as a dedicated safety binary sensor.
+
+## Maintenance note 2026-07-20
+
+Checked repository state, source docs, official city RSS and roadworks pages, Landkreis Osnabrück roadworks, Stadtwerke charging information, BNetzA charging register, VOS/VBN/GTFS leads and Smart-City/LoRaWAN/open-data leads. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries a Waldbrandgefahr notice, so the existing weather/flooding RSS safety classification now also covers wildfire/fire-risk keywords. Also refreshed the BNetzA documented CSV date, made the CSV parser accept the new UTF-8 register encoding, and corrected the moved VBN developer documentation URL.

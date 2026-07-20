@@ -83,7 +83,7 @@ Plugin-Umsetzung 25.05.2026:
 
 Recherche-Update 22.06.2026:
 
-- Der VBN dokumentiert offene GTFS-Static-Daten über Connect Fahrplanauskunft und GTFS-Realtime-Prognosedaten unter `http://gtfsr.vbn.de/gtfsr_connect.json` und `.bin`.
+- Der VBN dokumentiert offene GTFS-Static-Daten über Connect Fahrplanauskunft und GTFS-Realtime-Prognosedaten unter `http://gtfsr.vbn.de/gtfsr_connect.json` und `.bin`; die Entwicklerseite liegt seit Juli 2026 unter `/service/entwicklerinfos/open-data-und-open-service`.
 - GTFS.DE nennt VBN als enthaltene Agentur im freien GTFS-RT-Stream.
 - Der direkte VBN-JSON-Smoke-Test lieferte HTTP 200, war aber ca. 20 MB groß und enthält ohne lokale GTFS-Static-Zuordnung nur IDs (`routeId`, `tripId`, `stopId`).
 
@@ -137,13 +137,14 @@ Gefundene Ladeorte laut Stadt/Stadtwerke:
 Offizielle maschinenlesbare Quelle:
 
 - Bundesnetzagentur Ladesäulenregister Downloadseite: https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/DownloadundKontakt.html
-- CSV-Datenstand 22.04.2026: `Ladesaeulenregister_BNetzA_2026-04-22.csv`
+- CSV-Datenstand 07.07.2026: `Ladesaeulenregister_BNetzA_2026-07-07.csv`
 
 Filter `Postleitzahl=49124`, `Ort=Georgsmarienhütte` ergab:
 
 - 27 Ladeeinrichtungs-Einträge
 - 54 Ladepunkte
 - 14 zusammengefasste Ladeorte
+- 28 Schnellladepunkte, 26 Normalladepunkte
 - maximale Ladeleistung: 400 kW
 - Betreiber u.a. Stadtwerke Georgsmarienhütte, Q1, EnBW, EWE Go, Vattenfall, VINCharge/eliso, Deutsche Primärenergie
 
@@ -209,5 +210,5 @@ Schluss: Für echte Sensorik am Marktplatz/LoRaWAN müsste man Stadt oder Stadtw
 6. Parkplatz-POIs statisch aufnehmen.
 7. VBN/Connect GTFS-Static lokal für GMH-Haltestellen/Linien auswerten und danach GTFS-RT-Delays prüfen.
 8. Kamera-Datenfrische prüfen: Last-Modified/Content-Length/Hash.
-9. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser/Wetter/Wasser, Veranstaltung, Verwaltung. Ergänzt am 06.07.2026: Verkehrs-/Baumeldungen aus dem offiziellen Stadt-RSS werden zusätzlich als Problem-Binary-Sensor sichtbar gemacht. Ergänzt am 13.07.2026: Wetter-/Hochwasser-Klassifizierung erkennt auch Hitze-, Trockenheits- und Wassersparhinweise und wird als Safety-Binary-Sensor sichtbar.
+9. Stadt/RSS-Meldungen klassifizieren: Verkehr, Baustelle, Hochwasser/Wetter/Wasser, Veranstaltung, Verwaltung. Ergänzt am 06.07.2026: Verkehrs-/Baumeldungen aus dem offiziellen Stadt-RSS werden zusätzlich als Problem-Binary-Sensor sichtbar gemacht. Ergänzt am 13.07.2026: Wetter-/Hochwasser-Klassifizierung erkennt auch Hitze-, Trockenheits- und Wassersparhinweise und wird als Safety-Binary-Sensor sichtbar. Ergänzt am 20.07.2026: Waldbrand-/Brandgefahr-Hinweise werden ebenfalls als Sicherheitsthema erkannt.
 10. Optional: Solingen-ähnlicher MQTT-Modus für Home-Assistant-Autodiscovery.

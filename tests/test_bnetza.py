@@ -82,6 +82,13 @@ class TestGetGeorgsmarienhuetteCharging:
             result = await BnetzaChargingClient(session).get_georgsmarienhuette_charging()
         assert result["station_count"] == 1
 
+    async def test_accepts_utf8_encoded_csv(self, session):
+        with aioresponses() as m:
+            m.get(_CSV_URL, body=_MINIMAL_CSV.encode("utf-8"))
+            result = await BnetzaChargingClient(session).get_georgsmarienhuette_charging()
+        assert result["station_count"] == 1
+        assert result["locations"][0]["address"] == "Bahnhofstraße 1"
+
     async def test_aggregates_charging_points(self, session):
         with aioresponses() as m:
             m.get(_CSV_URL, body=_MINIMAL_CSV.encode("latin1"))

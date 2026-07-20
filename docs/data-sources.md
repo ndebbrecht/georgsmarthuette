@@ -97,9 +97,9 @@ Bewertung: nützliche öffentliche Quelle für Home-Assistant-Warnungen. Einschr
 
 ### VBN / Connect GTFS-Realtime
 
-Quelle: https://www.vbn.de/service/entwicklerinfos/opendata-und-openservice
+Quelle: https://www.vbn.de/service/entwicklerinfos/open-data-und-open-service
 
-Der VBN dokumentiert öffentliche GTFS-Realtime-Prognosedaten im JSON- und ProtoBuf-Format:
+Der VBN dokumentiert öffentliche GTFS-Realtime-Prognosedaten im JSON- und ProtoBuf-Format. Die Entwicklerseite wurde im Juli 2026 unter eine neue URL verschoben; der Feed selbst blieb unverändert erreichbar:
 
 ```text
 http://gtfsr.vbn.de/gtfsr_connect.json
@@ -112,9 +112,9 @@ Der VBN beschreibt die Daten als Prognosedaten mit planmäßiger An-/Abfahrt und
 https://realtime.gtfs.de/realtime-free.pb
 ```
 
-Live-Smoke-Test am 22.06.2026:
+Live-Smoke-Test am 20.07.2026:
 
-- `http://gtfsr.vbn.de/gtfsr_connect.json` antwortete mit HTTP 200 und `content-type: application/json`.
+- `http://gtfsr.vbn.de/gtfsr_connect.json` antwortete weiterhin mit HTTP 200 und `content-type: application/json`.
 - Der JSON-Feed war ca. 20 MB groß.
 - Die Einträge enthalten `tripUpdate`, `routeId`, `tripId`, `stopId` und Verspätungen, aber ohne lokale GTFS-Static-Zuordnung keine direkt sprechenden GMH-Haltestellen- oder Liniennamen.
 
@@ -169,7 +169,7 @@ https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/
 Aktuell verwendete CSV:
 
 ```text
-https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-04-22.csv
+https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-07-07.csv
 ```
 
 Filter im Plugin:
@@ -177,11 +177,12 @@ Filter im Plugin:
 - `Postleitzahl == 49124`
 - `Ort == Georgsmarienhütte`
 
-Rechercheergebnis im Datenstand 22.04.2026:
+Rechercheergebnis im Datenstand 07.07.2026:
 
 - 27 Ladeeinrichtungs-Einträge
 - 54 Ladepunkte
 - 14 zusammengefasste Ladeorte
+- 28 Schnellladepunkte, 26 Normalladepunkte
 - maximale Ladeleistung: 400 kW
 
 Gefundene Ladeorte u.a.:
@@ -194,7 +195,7 @@ Gefundene Ladeorte u.a.:
 - Oeseder Str. 123 — Stadtwerke Georgsmarienhütte
 - Am Markt 24 — Stadtwerke Georgsmarienhütte
 
-Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
+Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Der Datenstand 07.07.2026 wird als UTF-8 ausgeliefert; der Client akzeptiert deshalb UTF-8 und ältere Latin-1-Dateien. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
 
 ## Amtliche Warnmeldungen / NINA
 
@@ -328,14 +329,14 @@ Umsetzung:
 - neueste Meldung
 - Keyword-Zähler für Meldungsthemen:
   - Verkehr/Baustellen
-  - Wetter/Hochwasser/Wasserhinweise
+  - Wetter/Hochwasser/Wasser-/Waldbrandhinweise
   - Veranstaltungen
   - Verwaltung
 - Attribute mit Keywords, gefilterten Meldungen, neuestem Treffer und Quelllink
 - Problem-Binary-Sensor für aktuelle Verkehrs-/Baumeldungen aus derselben offiziellen RSS-Quelle
-- Safety-Binary-Sensor für aktuelle Wetter-, Hochwasser-, Hitze-, Trockenheits- oder Wassersparhinweise aus derselben offiziellen RSS-Quelle
+- Safety-Binary-Sensor für aktuelle Wetter-, Hochwasser-, Hitze-, Trockenheits-, Wasserspar- oder Waldbrandgefahr-Hinweise aus derselben offiziellen RSS-Quelle
 
-Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik. Die Binary-Sensoren ersetzen keine VOS-/Landkreis-Verkehrsdaten, NLWKN-Pegel oder NINA-Warnungen, sondern machen städtische Hinweise wie Vollsperrungen, Tiefbauarbeiten, Umleitungen, Wassersparaufrufe oder Trockenheitshinweise direkt automationstauglich.
+Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik. Die Binary-Sensoren ersetzen keine VOS-/Landkreis-Verkehrsdaten, NLWKN-Pegel oder NINA-Warnungen, sondern machen städtische Hinweise wie Vollsperrungen, Tiefbauarbeiten, Umleitungen, Wassersparaufrufe, Trockenheitshinweise oder Waldbrandgefahr direkt automationstauglich.
 
 ### Ratsinformationssystem
 
