@@ -169,7 +169,7 @@ https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/
 Aktuell verwendete CSV:
 
 ```text
-https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-07-07.csv
+https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-07-28.csv
 ```
 
 Filter im Plugin:
@@ -177,7 +177,7 @@ Filter im Plugin:
 - `Postleitzahl == 49124`
 - `Ort == Georgsmarienhütte`
 
-Rechercheergebnis im Datenstand 07.07.2026:
+Rechercheergebnis im Datenstand 28.07.2026:
 
 - 27 Ladeeinrichtungs-Einträge
 - 54 Ladepunkte
@@ -195,7 +195,7 @@ Gefundene Ladeorte u.a.:
 - Oeseder Str. 123 — Stadtwerke Georgsmarienhütte
 - Am Markt 24 — Stadtwerke Georgsmarienhütte
 
-Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Der Datenstand 07.07.2026 wird als UTF-8 ausgeliefert; der Client akzeptiert deshalb UTF-8 und ältere Latin-1-Dateien. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
+Bewertung: gute offizielle Stammdatenquelle für Home Assistant. Die CSV ist groß, daher cached der Client die GMH-Auswertung 24 Stunden im Speicher. Der Datenstand 28.07.2026 wird als UTF-8 ausgeliefert; der Client akzeptiert deshalb UTF-8 und ältere Latin-1-Dateien. Wichtig: Das Register enthält keine Live-Belegung/frei-belegt/Defekt-Status. Für Live-Daten wären Anbieter-APIs oder OCPI/OICP-Zugänge nötig.
 
 ## Amtliche Warnmeldungen / NINA
 

@@ -137,9 +137,9 @@ Gefundene Ladeorte laut Stadt/Stadtwerke:
 Offizielle maschinenlesbare Quelle:
 
 - Bundesnetzagentur Ladesäulenregister Downloadseite: https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/DownloadundKontakt.html
-- CSV-Datenstand 07.07.2026: `Ladesaeulenregister_BNetzA_2026-07-07.csv`
+- CSV-Datenstand 28.07.2026: `Ladesaeulenregister_BNetzA_2026-07-28.csv`
 
-Filter `Postleitzahl=49124`, `Ort=Georgsmarienhütte` ergab:
+Filter `Postleitzahl=49124`, `Ort=Georgsmarienhütte` ergab im Datenstand 28.07.2026:
 
 - 27 Ladeeinrichtungs-Einträge
 - 54 Ladepunkte

@@ -79,3 +79,7 @@ Checked repository state, source docs, official city RSS and roadworks pages, La
 ## Maintenance note 2026-07-20
 
 Checked repository state, source docs, official city RSS and roadworks pages, Landkreis Osnabrück roadworks, Stadtwerke charging information, BNetzA charging register, VOS/VBN/GTFS leads and Smart-City/LoRaWAN/open-data leads. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The official city RSS currently carries a Waldbrandgefahr notice, so the existing weather/flooding RSS safety classification now also covers wildfire/fire-risk keywords. Also refreshed the BNetzA documented CSV date, made the CSV parser accept the new UTF-8 register encoding, and corrected the moved VBN developer documentation URL.
+
+## Maintenance note 2026-08-03
+
+Checked repository state, source docs, official city RSS and roadworks page, Landkreis Osnabrück roadworks, VOS disruption notices, Stadtwerke/city charging pages, BNetzA charging register, NINA warnings and Smart-City/LoRaWAN/open-data leads. No new stable GMH-specific Smart-City/open-data platform, live parking API or live charging API was found. The BNetzA charging-register download page now points to `Ladesaeulenregister_BNetzA_2026-07-28.csv`; the GMH result is unchanged at 27 station entries, 54 charging points, 14 locations, 28 fast and 26 normal charging points, so only the documented/current fallback CSV URL was refreshed.
