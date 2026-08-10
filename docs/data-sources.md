@@ -336,7 +336,7 @@ Umsetzung:
 - Problem-Binary-Sensor für aktuelle Verkehrs-/Baumeldungen aus derselben offiziellen RSS-Quelle
 - Safety-Binary-Sensor für aktuelle Wetter-, Hochwasser-, Hitze-, Trockenheits-, Wasserspar- oder Waldbrandgefahr-Hinweise aus derselben offiziellen RSS-Quelle
 
-Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik. Die Binary-Sensoren ersetzen keine VOS-/Landkreis-Verkehrsdaten, NLWKN-Pegel oder NINA-Warnungen, sondern machen städtische Hinweise wie Vollsperrungen, Tiefbauarbeiten, Umleitungen, Wassersparaufrufe, Trockenheitshinweise oder Waldbrandgefahr direkt automationstauglich.
+Bewertung: stabile offizielle Stadtquelle. Die Themenzuordnung ist bewusst einfache Keyword-Klassifizierung und keine amtliche Kategorisierung; sie eignet sich als Home-Assistant-Hinweis, nicht als alleinige Warnlogik. Die Binary-Sensoren ersetzen keine VOS-/Landkreis-Verkehrsdaten, NLWKN-Pegel oder NINA-Warnungen, sondern machen städtische Hinweise wie Vollsperrungen, Tiefbauarbeiten, Umleitungen, Wassersparaufrufe, Beregnungsverbote, Wasserentnahmeverbote, Trockenheitshinweise oder Waldbrandgefahr direkt automationstauglich.
 
 ### Ratsinformationssystem
 
