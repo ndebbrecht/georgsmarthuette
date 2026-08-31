@@ -151,12 +151,25 @@ GMH_ROADWORKS_RELEVANCE_TERMS = (
     "harderberg",
     "holzhausen",
     "malbergen",
-    "b51",
-    "b 51",
-    "b51/b68",
-    "b 51 / b 68",
     "osnabrück-nahne",
     "osnabrueck-nahne",
+)
+
+# A plain B51 mention is too broad on the county page: the road also appears in
+# roadworks around Glandorf, Belm or Icker that are not meaningfully GMH-local.
+# Treat B51/B68 as relevant only when paired with the GMH-side context below.
+GMH_ROADWORKS_B51_CONTEXT_TERMS = (
+    "georgsmarienhütte",
+    "georgsmarienhuette",
+    "gmhütte",
+    "gmhuette",
+    "oesede",
+    "osnabrück-nahne",
+    "osnabrueck-nahne",
+    "bad iburg",
+    "weghaus",
+    "b68",
+    "b 68",
 )
 
 @dataclass(slots=True)
@@ -542,7 +555,11 @@ class CountyRoadworksClient:
     @staticmethod
     def _is_relevant(title: str, description: str) -> bool:
         haystack = f"{title} {description}".lower()
-        return any(term in haystack for term in GMH_ROADWORKS_RELEVANCE_TERMS)
+        if any(term in haystack for term in GMH_ROADWORKS_RELEVANCE_TERMS):
+            return True
+        if "b51" in haystack or "b 51" in haystack:
+            return any(term in haystack for term in GMH_ROADWORKS_B51_CONTEXT_TERMS)
+        return False
 
     @classmethod
     def parse_roadworks(cls, html: str) -> dict[str, Any]:

@@ -43,7 +43,12 @@ class TestCountyRoadworksParser:
         assert result["relevant_count"] == 1
         assert "Georgsmarienhütte" in result["relevant_items"][0]["title"]
 
-    def test_b51_is_relevant_even_without_city_name(self):
+    def test_b51_is_relevant_with_gmh_side_context(self):
         html = '<div class="card card-accordion" id="node-3"><h6 class="headline-title">B51 Richtung Bad Iburg</h6><div class="card-body"><p>Ausfahrt gesperrt.</p></div></div>'
         result = CountyRoadworksClient.parse_roadworks(html)
         assert result["relevant_count"] == 1
+
+    def test_b51_alone_is_not_relevant(self):
+        html = '<div class="card card-accordion" id="node-4"><h6 class="headline-title">B475 Füchtorfer Straße</h6><div class="card-body"><p>Die B 475 wird zwischen Kreisverkehr Münsterstraße und Kreisverkehr B 51 saniert.</p></div></div>'
+        result = CountyRoadworksClient.parse_roadworks(html)
+        assert result["relevant_count"] == 0

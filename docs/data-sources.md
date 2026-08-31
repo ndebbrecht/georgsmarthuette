@@ -124,7 +124,7 @@ Bewertung: technisch interessant und offiziell dokumentiert, aber noch nicht als
 
 Quelle: https://www.landkreis-osnabrueck.de/fachthemen/ordnung-und-verkehr/baustellen-und-blitzplan
 
-Die Landkreis-Seite veröffentlicht aktuelle Verkehrs- und Baustellenmeldungen als öffentliche HTML-Akkordeonliste mit Titel, Zeitraum und Beschreibung. Eine JSON- oder Feed-Schnittstelle war nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Karten und filtert nach GMH-relevanten Orts- und Straßenbegriffen, u.a. `Georgsmarienhütte`, `GMHütte`, `Oesede`, `Harderberg`, `B51` und `Osnabrück-Nahne`.
+Die Landkreis-Seite veröffentlicht aktuelle Verkehrs- und Baustellenmeldungen als öffentliche HTML-Akkordeonliste mit Titel, Zeitraum und Beschreibung. Eine JSON- oder Feed-Schnittstelle war nicht sichtbar. Die Integration parst deshalb konservativ nur die sichtbaren Karten und filtert nach GMH-relevanten Orts- und Straßenbegriffen, u.a. `Georgsmarienhütte`, `GMHütte`, `Oesede`, `Harderberg` und `Osnabrück-Nahne`. Reine `B51`-Nennungen werden nur noch mit zusätzlichem GMH-seitigem Kontext wie `Bad Iburg`, `Oesede`, `Weghaus`, `B68` oder `Osnabrück-Nahne` gewertet, weil die Landkreis-Seite die B51 auch bei nicht lokalen Maßnahmen erwähnt.
 
 Live-Smoke-Test am 08.06.2026 ergab 12 Landkreis-Meldungen, davon 2 GMH-relevant:
 
